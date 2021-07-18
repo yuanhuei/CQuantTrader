@@ -1,0 +1,29 @@
+[
+{
+
+        "strategy_name": "BollChannelStrategy",
+        "vt_symbol": "FG2109.INE",
+        "class_name": "BollChannelStrategy",
+        "setting": {
+            
+            "boll_window": 26,
+            "boll_dev": 4,
+            "cci_window": 11,
+            "atr_window": 32,
+            "sl_multiplier": 6,
+            "fixed_size": 1
+        }
+
+},
+{
+	"strategy_name": "oneminutebreak.dll",
+	"vt_symbol": "rb1710",
+                "class_name": "minturtle",
+	"setting": {
+		"gatewayname": 1,
+		"name": 1,
+		"slippage_rb": 1,
+		"rb1710": 0.000045
+	}
+}
+]

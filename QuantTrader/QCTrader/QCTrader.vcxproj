@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AB0F6DFA-D12B-4A66-B2DF-764E1EFE972B}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="QtSettings">
+    <QtInstall>msvc2017</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="QtSettings">
+    <QtInstall>msvc2017</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\include;..\include\libbson-1.0;..\include\libmongoc-1.0;..;$(ProjectDir);.\jsoncpp\include;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>../lib;../bin;D:\Qt\Qt5.12.11\5.12.11\msvc2017\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mongoc-1.0.lib;bson-1.0.lib;thostmduserapi_se.lib;thosttraderapi_se.lib;ta_libc_cmr.lib;Qt5PrintSupport.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\include\MongoCxx.cpp" />
+    <ClCompile Include="AlgorithmOrder.cpp" />
+    <ClCompile Include="BacktesterManager.cpp" />
+    <ClCompile Include="ContractQueryManager.cpp" />
+    <ClCompile Include="CTAStrategyManager.cpp" />
+    <ClCompile Include="cta_backtester\BacktesterEngine.cpp" />
+    <ClCompile Include="cta_strategy\CtaEngine.cpp" />
+    <ClCompile Include="cta_strategy\strategies\BollChannelStrategy.cpp" />
+    <ClCompile Include="CTPConnectWidgets.cpp" />
+    <ClCompile Include="gateway\ctp_gateway\ctpgateway.cpp" />
+    <ClCompile Include="gateway\ctp_gateway\ctpmd.cpp" />
+    <ClCompile Include="gateway\ctp_gateway\ctptd.cpp" />
+    <ClCompile Include="json11.cpp" />
+    <ClCompile Include="jsoncpp\src\json_reader.cpp" />
+    <ClCompile Include="jsoncpp\src\json_value.cpp" />
+    <ClCompile Include="jsoncpp\src\json_writer.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="portfolio.cpp" />
+    <ClCompile Include="qcustomplot-source\qcustomplot.cpp" />
+    <ClCompile Include="risk_manager\riskmanager.cpp" />
+    <ClCompile Include="utility.cpp" />
+    <QtRcc Include="QCTrader.qrc" />
+    <QtUic Include="BacktesterManager.ui" />
+    <QtUic Include="ContractQueryManager.ui" />
+    <QtUic Include="CTAStrategyManager.ui" />
+    <QtUic Include="CTPConnectWidgets.ui" />
+    <QtUic Include="MainWindow.ui" />
+    <QtUic Include="QCTrader.ui" />
+    <QtMoc Include="QCTrader.h" />
+    <ClCompile Include="cta_strategy\StrategyTemplate.cpp" />
+    <ClCompile Include="event_engine\eventengine.cpp" />
+    <ClCompile Include="gateway\gatewaymanager.cpp" />
+    <ClCompile Include="gateway\qcgateway.hpp" />
+    <ClCompile Include="QCTrader.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="MainWindow.h" />
+    <QtMoc Include="CTAStrategyManager.h" />
+    <QtMoc Include="BacktesterManager.h" />
+    <ClInclude Include="..\include\BaseEngine.h" />
+    <QtMoc Include="ContractQueryManager.h" />
+    <ClInclude Include="cta_backtester\BacktesterEngine.h" />
+    <ClInclude Include="cta_strategy\CtaEngine.h" />
+    <ClInclude Include="cta_strategy\strategies\BollChannelStrategy.h" />
+    <ClInclude Include="Debug\uic\ui_ContractQueryManager.h" />
+    <ClInclude Include="Debug\uic\ui_CTAStrategyManager.h" />
+    <ClInclude Include="Debug\uic\ui_MainWindow.h" />
+    <QtMoc Include="qcustomplot-source\qcustomplot.h" />
+    <ClInclude Include="utility.h" />
+    <ClInclude Include="..\include\MongoCxx.h" />
+    <ClInclude Include="AlgorithmOrder.h" />
+    <ClInclude Include="cta_strategy\StrategyTemplate.h" />
+    <QtMoc Include="CTPConnectWidgets.h" />
+    <ClInclude Include="Debug\uic\ui_ctp.h" />
+    <ClInclude Include="Debug\uic\ui_CTPConnectWidgets.h" />
+    <ClInclude Include="Debug\uic\ui_QCTrader.h" />
+    <ClInclude Include="event_engine\eventengine.h" />
+    <ClInclude Include="gateway\ctp_gateway\ctpgateway.h" />
+    <ClInclude Include="gateway\ctp_gateway\ctpmd.h" />
+    <ClInclude Include="gateway\ctp_gateway\ctptd.h" />
+    <ClInclude Include="gateway\gatewaymanager.h" />
+    <ClInclude Include="json11.hpp" />
+    <ClInclude Include="portfolio.h" />
+    <ClInclude Include="qcstructs.h" />
+    <ClInclude Include="risk_manager\riskmanager.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

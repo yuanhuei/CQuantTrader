@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BacktesterManager</class>
+ <widget class="QWidget" name="BacktesterManager">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>951</width>
+    <height>593</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CTA回测</string>
+  </property>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>491</width>
+     <height>561</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <item>
+     <widget class="QFrame" name="frame_3">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>交易策略</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox"/>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>合约代码</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_2">
+           <property name="text">
+            <string>al2109</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>K线周期</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_2">
+           <item>
+            <property name="text">
+             <string>分钟</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>小时</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>天</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>开始日期</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDateEdit" name="dateEdit">
+           <property name="dateTime">
+            <datetime>
+             <hour>0</hour>
+             <minute>0</minute>
+             <second>0</second>
+             <year>2010</year>
+             <month>1</month>
+             <day>4</day>
+            </datetime>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="4" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>结束日期</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDateEdit" name="dateEdit_2">
+           <property name="dateTime">
+            <datetime>
+             <hour>0</hour>
+             <minute>0</minute>
+             <second>0</second>
+             <year>2010</year>
+             <month>1</month>
+             <day>20</day>
+            </datetime>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="5" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>手续费率</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_10">
+           <property name="text">
+            <string>2.5e-05</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="6" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>交易滑点</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_9">
+           <property name="text">
+            <string>0.5</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="7" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>合约乘数</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_12">
+           <property name="text">
+            <string>10</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="8" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_13">
+         <item>
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>价格跳动</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_13">
+           <property name="text">
+            <string>0.5</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="9" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_14">
+         <item>
+          <widget class="QLabel" name="label_14">
+           <property name="text">
+            <string>回测资金</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_14">
+           <property name="text">
+            <string>100000</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="10" column="0">
+        <widget class="QPushButton" name="pushButton">
+         <property name="text">
+          <string>开始回测</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>下载数据</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_15">
+         <item>
+          <widget class="QPushButton" name="pushButton_4">
+           <property name="text">
+            <string>成交几率</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_3">
+           <property name="text">
+            <string>委托记录</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="13" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_16">
+         <item>
+          <widget class="QPushButton" name="pushButton_5">
+           <property name="text">
+            <string>每日盈亏</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_6">
+           <property name="text">
+            <string>k线图表</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="14" column="0">
+        <widget class="QPushButton" name="pushButton_7">
+         <property name="text">
+          <string>参数优化</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0">
+        <widget class="QPushButton" name="pushButton_8">
+         <property name="text">
+          <string>优化结果</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame_4">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QSplitter" name="splitter_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="QFrame" name="frame_5">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QTableWidget" name="tableWidget">
+             <row>
+              <property name="text">
+               <string>首个交易日</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>最后交易日</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>总交易日</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>盈利交易日</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>亏损交易日</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>起始资金</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>结束资金</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>总收益率</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>年化收益</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>最大回撤</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>百分比最大回撤</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>总盈亏</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>总手续费</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>总滑点</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>总成交金额</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>总成交笔数</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>日均盈亏</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>日均手续费</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>日均滑点</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>日均成交金额</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>日均成交笔数</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>日均收益率</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>收益标准差</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Sharpe Ratio</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>收益回撤比</string>
+              </property>
+             </row>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QFrame" name="frame_6">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QTextEdit" name="textEdit"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QFrame" name="frame_2">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>10</y>
+     <width>431</width>
+     <height>511</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QCustomPlot" name="widget" native="true"/>
+    </item>
+    <item>
+     <widget class="QCustomPlot" name="widget_2" native="true"/>
+    </item>
+    <item>
+     <widget class="QCustomPlot" name="widget_3" native="true"/>
+    </item>
+    <item>
+     <widget class="QCustomPlot" name="widget_4" native="true"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>BacktesterManager</receiver>
+   <slot>startBacktest_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>131</x>
+     <y>363</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>324</x>
+     <y>-17</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>startBacktest_clicked()</slot>
+ </slots>
+</ui>

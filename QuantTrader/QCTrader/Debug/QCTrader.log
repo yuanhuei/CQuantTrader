@@ -1,0 +1,54 @@
+﻿  Reading Qt configuration (D:/Qt/Qt5.12.11/5.12.11/msvc2017/bin/qmake)
+  uic BacktesterManager.ui
+  uic ContractQueryManager.ui
+  uic CTAStrategyManager.ui
+  uic CTPConnectWidgets.ui
+  uic MainWindow.ui
+  uic QCTrader.ui
+  rcc QCTrader.qrc
+  moc QCTrader.h
+  moc MainWindow.h
+  moc CTAStrategyManager.h
+   RCC: Warning: No resources in 'C:\Users\yuanh\Documents\GitHub\trader\QCTrader\QCTrader.qrc'.
+  moc BacktesterManager.h
+  moc ContractQueryManager.h
+  moc qcustomplot-source\qcustomplot.h
+  moc CTPConnectWidgets.h
+  MongoCxx.cpp
+  AlgorithmOrder.cpp
+  BacktesterManager.cpp
+  ContractQueryManager.cpp
+  CTAStrategyManager.cpp
+  BacktesterEngine.cpp
+C:\Users\yuanh\Documents\GitHub\trader\QCTrader\AlgorithmOrder.cpp(829): warning C4715: “algorithmOrder::checkStop”: 不是所有的控件路径都返回值
+  CtaEngine.cpp
+  BollChannelStrategy.cpp
+  CTPConnectWidgets.cpp
+  ctpgateway.cpp
+  ctpmd.cpp
+  ctptd.cpp
+  json11.cpp
+  json_reader.cpp
+  json_value.cpp
+  json_writer.cpp
+  MainWindow.cpp
+  portfolio.cpp
+  qcustomplot.cpp
+  riskmanager.cpp
+  utility.cpp
+  StrategyTemplate.cpp
+  eventengine.cpp
+  gatewaymanager.cpp
+  qcgateway.hpp
+  QCTrader.cpp
+  main.cpp
+  qrc_QCTrader.cpp
+  moc_QCTrader.cpp
+  moc_MainWindow.cpp
+  moc_CTAStrategyManager.cpp
+  moc_BacktesterManager.cpp
+  moc_ContractQueryManager.cpp
+  moc_qcustomplot.cpp
+  moc_CTPConnectWidgets.cpp
+LINK : warning LNK4098: 默认库“LIBCMT”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+  QCTrader.vcxproj -> C:\Users\yuanh\Documents\GitHub\trader\QCTrader\Debug\QCTrader.exe

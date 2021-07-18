@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1271</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QFrame" name="frame">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>400</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QSplitter" name="splitter_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QFrame" name="frame_3">
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <widget class="QFrame" name="frame_5">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>0</y>
+              <width>231</width>
+              <height>311</height>
+             </rect>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>交易所：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="comboBox">
+                 <item>
+                  <property name="text">
+                   <string>CFFEX</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>SHFE</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>CZCE</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>DCE</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>INE</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <widget class="QLabel" name="label_12">
+                 <property name="text">
+                  <string>代码：           </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <item>
+                <widget class="QLabel" name="label_13">
+                 <property name="text">
+                  <string>方向：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="comboBox_2">
+                 <item>
+                  <property name="text">
+                   <string>多</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>空</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <item>
+                <widget class="QLabel" name="label_14">
+                 <property name="text">
+                  <string>开平：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="comboBox_3">
+                 <item>
+                  <property name="text">
+                   <string>开</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>平</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>平今</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>平昨</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_13">
+               <item>
+                <widget class="QLabel" name="label_16">
+                 <property name="text">
+                  <string>类型：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="comboBox_5">
+                 <item>
+                  <property name="text">
+                   <string>限价</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>市价</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>STOP</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>FAK</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>FOK</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>询价</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <item>
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>价格：           </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_2"/>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="checkBox">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_16">
+               <item>
+                <widget class="QLabel" name="label_19">
+                 <property name="text">
+                  <string>数量：           </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_3"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_14">
+               <item>
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>接口：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="comboBox_6">
+                 <item>
+                  <property name="text">
+                   <string>CTP</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QFrame" name="frame_6">
+            <property name="geometry">
+             <rect>
+              <x>240</x>
+              <y>10</y>
+              <width>131</width>
+              <height>181</height>
+             </rect>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>卖一价：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <item>
+                <widget class="QLabel" name="label_7">
+                 <property name="text">
+                  <string>最新价：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>买一价：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="text">
+                  <string>涨停价：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>跌停价：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QPushButton" name="pushButton">
+            <property name="geometry">
+             <rect>
+              <x>50</x>
+              <y>330</y>
+              <width>75</width>
+              <height>23</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>下单</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="geometry">
+             <rect>
+              <x>200</x>
+              <y>330</y>
+              <width>75</width>
+              <height>23</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>全撤</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QFrame" name="frame_4">
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QSplitter" name="splitter_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <widget class="QTableView" name="tableView_4"/>
+              <widget class="QTableView" name="tableView_5"/>
+              <widget class="QTableView" name="tableView_6"/>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QFrame" name="frame_2">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QSplitter" name="splitter_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QTableWidget" name="tableWidget">
+           <column>
+            <property name="text">
+             <string>时间</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>信息</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>接口</string>
+            </property>
+           </column>
+          </widget>
+          <widget class="QTableView" name="tableView_2"/>
+          <widget class="QTableView" name="tableView_3"/>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1271</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>系统</string>
+    </property>
+    <addaction name="actionCTP_Connect"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>功能</string>
+    </property>
+    <addaction name="actionCTP"/>
+    <addaction name="actionCTP_2"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="action_2"/>
+    <addaction name="action"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionCTP_Connect">
+   <property name="text">
+    <string>CTP Connect</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionCTP">
+   <property name="text">
+    <string>CTP 策略</string>
+   </property>
+  </action>
+  <action name="actionCTP_2">
+   <property name="text">
+    <string>CTP 回测</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>关于</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>查询合约</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionCTP_Connect</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_ctp_connect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>654</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_exit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>654</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>symbol_ReturnPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>215</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>8</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SendOrder_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>96</x>
+     <y>397</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>6</x>
+     <y>406</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCTP</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_CTAStrategy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>635</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCTP_2</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_CTABacktest()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>635</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_2</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_contractQueryclicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>635</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>menu_ctp_connect()</slot>
+  <slot>menu_exit()</slot>
+  <slot>symbol_ReturnPressed()</slot>
+  <slot>SendOrder_clicked()</slot>
+  <slot>menu_CTAStrategy()</slot>
+  <slot>menu_CTABacktest()</slot>
+  <slot>menu_contractQueryclicked()</slot>
+ </slots>
+</ui>
