@@ -40,6 +40,8 @@
 #define STATUS_SUBMITTING "ordersubmitting"
 #define STATUS_TRIGGED "ordertrigged"
 #define STATUS_REGECTED "orderrejected"
+#define STATUS_UNKNOWN "unknown"
+
 
 #define BAR_MODE "barmode"
 #define TICK_MODE "tickmode"

@@ -191,7 +191,7 @@ void MainWindow::ConnectSignalAndSlot()
 	connect(this, SIGNAL(UpdatePositionSignal(PositionData)), this, SLOT(UpdatePositionBox(PositionData)), Qt::QueuedConnection);
 	connect(this, SIGNAL(UpdateAccountSignal(AccountData)), this, SLOT(UpdateAccountBox(AccountData)), Qt::QueuedConnection);
 	connect(this, SIGNAL(UpdatePriceTableSignal(UpdatePriceTableData)), this, SLOT(UpdateTickTable(UpdatePriceTableData)), Qt::QueuedConnection);
-	connect(this, SIGNAL(UpdateOrDerTableSignal(UpdateOrderTableData)), this, SLOT(UpdateOrderTable(UpdateOrderTableData)), Qt::QueuedConnection);
+	connect(this, SIGNAL(UpdateOrderTableSignal(UpdateOrderTableData)), this, SLOT(UpdateOrderTable(UpdateOrderTableData)), Qt::QueuedConnection);
 	connect(this, SIGNAL(UpdateTradeTableSignal(UpdateTradeTableData)), this, SLOT(UpdateTradeTable(UpdateTradeTableData)), Qt::QueuedConnection);
 
 	//connect(this, SIGNAL(LoadStrategySignal(LoadStrategyData)), this, SLOT(CreateStrategyBox(LoadStrategyData)), Qt::QueuedConnection);
@@ -340,14 +340,16 @@ void MainWindow::symbol_ReturnPressed()
 	SubscribeReq req;
 	req.symbol = ui.lineEdit->text().toStdString();
 	req.exchange = ui.comboBox->currentText().toStdString();
-	if (req.symbol.length() > 0)
-		m_gatewaymanager->subscribe(req, "CTP");
 
 	bool bAdded = false;//还没有加入行情价格表
 	for (int i = 0; i < m_SymbolSubscribedTableModel->rowCount(); i++)
 	{
-		if (m_SymbolSubscribedTableModel->item(i, 0)->text().toStdString() != req.symbol)//判断是否是一个合约，是就更新数据
+		if (m_SymbolSubscribedTableModel->item(i, 0)->text().toStdString() == req.symbol)//判断是否是一个合约，是就更新数据
+		{
 			bAdded = true;
+			write_log("合约已订阅过", "MainWindow");
+			return;
+		}
 	}
 	if (bAdded==false)//还没加入，就加入
 	{
@@ -363,9 +365,10 @@ void MainWindow::symbol_ReturnPressed()
 		std::string DateTime = " ";
 		m_SymbolSubscribedTableModel->setItem(i, 8, new QStandardItem(QString::fromStdString(DateTime)));
 		m_SymbolSubscribedTableModel->setItem(i, 9, new QStandardItem("CTP"));
-
-
 	}
+	//发送订阅行情请求
+	if (req.symbol.length() > 0)
+		m_gatewaymanager->subscribe(req, "CTP");
 }
 
 void MainWindow::SendOrder_clicked()
@@ -418,13 +421,15 @@ void MainWindow::SendOrder_clicked()
 	
 	this->write_log("订单发送,编号为:" + orderRef, "MainWindow");
 }
+
+//更新Ordertable
 void MainWindow::UpdateOrderTable(UpdateOrderTableData data)
 {
 	//ordersubmitheader << str2qstr_new("委托号") << str2qstr_new("来源") << str2qstr_new("合约代码") << str2qstr_new("交易所")<< str2qstr_new("方向") << str2qstr_new("开平") << str2qstr_new("价格") << str2qstr_new("总数量") << str2qstr_new("已成交") << str2qstr_new("状态") << str2qstr_new("发单时间") << str2qstr_new("撤单时间")<< str2qstr_new("接口");
 		//更新数据，如果已经存在就更新，如果没有就插入
 	for (int i = 0; i < m_OrderSubmitTableModel->rowCount(); i++)
 	{
-		if (m_OrderSubmitTableModel->item(i, 0)->text().toStdString() == data.symbol)//判断是否是一个合约，是就更新数据
+		if (m_OrderSubmitTableModel->item(i, 0)->text().toStdString() == data.orderID)//判断是否是一个order，是就更新数据
 		{
 			m_OrderSubmitTableModel->setItem(i, 0, new QStandardItem(str2qstr_new(data.orderID)));
 			m_OrderSubmitTableModel->setItem(i, 1, new QStandardItem(QString::number(data.frontID)));
@@ -437,8 +442,8 @@ void MainWindow::UpdateOrderTable(UpdateOrderTableData data)
 			m_OrderSubmitTableModel->setItem(i, 8, new QStandardItem(QString::number(data.tradedVolume)));
 			m_OrderSubmitTableModel->setItem(i, 9, new QStandardItem(str2qstr_new(data.status)));
 			m_OrderSubmitTableModel->setItem(i, 10, new QStandardItem(str2qstr_new(data.orderTime)));
-			m_OrderSubmitTableModel->setItem(i, 11, new QStandardItem(str2qstr_new(data.cancelTime)));
-			m_OrderSubmitTableModel->setItem(i, 12, new QStandardItem(str2qstr_new(data.gatewayname)));
+			//m_OrderSubmitTableModel->setItem(i, 11, new QStandardItem(str2qstr_new(data.cancelTime)));
+			m_OrderSubmitTableModel->setItem(i, 11, new QStandardItem(str2qstr_new(data.gatewayname)));
 			return;
 		}
 	}
@@ -456,8 +461,8 @@ void MainWindow::UpdateOrderTable(UpdateOrderTableData data)
 	m_OrderSubmitTableModel->setItem(i, 8, new QStandardItem(QString::number(data.tradedVolume)));
 	m_OrderSubmitTableModel->setItem(i, 9, new QStandardItem(str2qstr_new(data.status)));
 	m_OrderSubmitTableModel->setItem(i, 10, new QStandardItem(str2qstr_new(data.orderTime)));
-	m_OrderSubmitTableModel->setItem(i, 11, new QStandardItem(str2qstr_new(data.cancelTime)));
-	m_OrderSubmitTableModel->setItem(i, 12, new QStandardItem(str2qstr_new(data.gatewayname)));
+	//m_OrderSubmitTableModel->setItem(i, 11, new QStandardItem(str2qstr_new(data.cancelTime)));
+	m_OrderSubmitTableModel->setItem(i, 11, new QStandardItem(str2qstr_new(data.gatewayname)));
 }
 
 
@@ -517,14 +522,14 @@ void MainWindow::UpdateTickTable(UpdatePriceTableData data)
 	std::string strSymbol = ui.lineEdit->text().toStdString();
 	if (data.symbol == strSymbol)
 	{
-		ui.label_7->setText(QString::fromStdString((std::to_string(data.lastprice))));//设置最新价
-		ui.label_2->setText(QString::fromStdString((std::to_string(data.bidprice1))));//设置卖一价
-		ui.label_3->setText(QString::fromStdString((std::to_string(data.askprice1))));//设置卖一价
-		ui.label_5->setText(QString::fromStdString((std::to_string(data.upperLimit))));//设置涨停价
-		ui.label_9->setText(QString::fromStdString((std::to_string(data.lowerLimit))));//设置跌停价
+		ui.label_8->setText(QString::fromStdString((std::to_string(int(data.lastprice)))));//设置最新价
+		ui.label->setText(QString::fromStdString((std::to_string(int(data.bidprice1)))));//设置卖一价
+		ui.label_4->setText(QString::fromStdString((std::to_string(int(data.askprice1)))));//设置卖一价
+		ui.label_6->setText(QString::fromStdString((std::to_string(int(data.upperLimit)))));//设置涨停价
+		ui.label_10->setText(QString::fromStdString((std::to_string(int(data.lowerLimit)))));//设置跌停价
 		if (ui.checkBox->isChecked() == true) //如果价格的复选框勾选，也要更新这个价格
 		{
-			ui.lineEdit_2->setText(QString::fromStdString((std::to_string(data.lastprice))));
+			ui.lineEdit_2->setText(QString::fromStdString((std::to_string(int(data.lastprice)))));
 		}
 	}
 	UpdateSymbolBox(data);
@@ -543,7 +548,8 @@ void MainWindow::UpdateSymbolBox(UpdatePriceTableData data)
 		if (m_SymbolSubscribedTableModel->item(i, 0)->text().toStdString() == data.symbol)//判断是否是一个合约，是就更新数据
 		{
 			m_SymbolSubscribedTableModel->setItem(i, 0, new QStandardItem(str2qstr_new(data.symbol)));
-			m_SymbolSubscribedTableModel->setItem(i, 1, new QStandardItem(str2qstr_new(data.exchange)));
+			std::string exchange = m_gatewaymanager->GetExchangeName(data.symbol, "CTP");
+			m_SymbolSubscribedTableModel->setItem(i, 1, new QStandardItem(str2qstr_new(exchange)));
 			m_SymbolSubscribedTableModel->setItem(i, 2, new QStandardItem(QString::fromStdString((std::to_string(data.lastprice)))));
 			m_SymbolSubscribedTableModel->setItem(i, 3, new QStandardItem(QString::fromStdString((std::to_string(data.openInterest)))));
 			m_SymbolSubscribedTableModel->setItem(i, 4, new QStandardItem(QString::fromStdString((std::to_string(data.upperLimit)))));

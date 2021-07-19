@@ -365,6 +365,7 @@ void CTPTD::OnRtnOrder(CThostFtdcOrderField* pOrder)
 	if (pOrder == nullptr)
 	{
 		//空指针
+		m_ctpgateway->write_log("返回为空指针");
 		return;
 	}
 	//报单编号不断累加
@@ -425,22 +426,23 @@ void CTPTD::OnRtnOrder(CThostFtdcOrderField* pOrder)
 	else if (pOrder->OrderStatus == THOST_FTDC_OST_PartTradedQueueing)
 	{
 		//部分成交
-		e->status = THOST_FTDC_OST_PartTradedQueueing;
+		e->status = "部分成交还在队列中";// THOST_FTDC_OST_PartTradedQueueing;
 	}
 	else if (pOrder->OrderStatus == THOST_FTDC_OST_NoTradeQueueing)
 	{
 		//未成交
-		e->status = THOST_FTDC_OST_NoTradeQueueing;
+		e->status = "未成交还在队列中";// THOST_FTDC_OST_NoTradeQueueing;
 	}
 	else if (pOrder->OrderStatus == THOST_FTDC_OST_Canceled)
 	{
 		//撤销
 		e->status = STATUS_CANCELLED;
+		m_ctpgateway->write_log(pOrder->StatusMsg);
 	}
 	else
 	{
 		//未知
-		e->status = THOST_FTDC_OST_Unknown;
+		e->status = STATUS_UNKNOWN;// THOST_FTDC_OST_Unknown;
 	}
 
 	e->price = pOrder->LimitPrice;
