@@ -3,10 +3,18 @@
 #### 介绍
 量化交易框架，编译环境编译用VS2019 + QT5.12.11_msvc2017
 
-#### 软件架构
-软件架构说明
 
+#### 软件架构说明
 
+#######软件功能
+1.行情订阅，下单，订单管理，仓位和账户查询
+![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/140614_3623bcc0_9459957.jpeg "图像 5.jpg")
+2.合约查询
+![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/140944_4d4db3fd_9459957.jpeg "合约查询.jpg")
+3.CTA策略
+![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/141013_b3fc82ac_9459957.jpeg "CTA策略.jpg")
+4.CTA回测
+![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/141041_695d2f29_9459957.jpeg "CTA回测.jpg")
 #### 安装教程
 
 1.  xxxx
