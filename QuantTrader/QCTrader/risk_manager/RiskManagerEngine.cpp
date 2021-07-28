@@ -146,7 +146,7 @@ bool RiskManagerEngine::checkRisk(OrderReq req)
 		return false;
 	}
 
-	//working order limit 晚上写
+	////合约撤单上限：今天日内允许的单合约撤单次数上限（每个合约独立统计）
 	std::lock_guard<std::mutex>lck(orderCancelMapMtx);
 	if (orderCancelMap.find(req.symbol) != orderCancelMap.end())
 	{
@@ -160,8 +160,11 @@ bool RiskManagerEngine::checkRisk(OrderReq req)
 			return false;
 		}
 	}
+	//workingOrderLimit活动委托上限：允许的处于活动状态（提交中、未成交、部分成交）最大委托数量
+	//待写
 
-	orderFlowCount += 1;
+
+	orderFlowCount += 1;//上面的判断都通过后委托流计数加一
 	
 	return true;
 
