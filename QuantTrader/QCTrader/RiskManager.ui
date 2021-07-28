@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RiskManager</class>
+ <widget class="QWidget" name="RiskManager">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>310</width>
+    <height>345</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string extracomment="交易风控">RiskManager</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
+     <item>
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>风控运行状态</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox">
+       <item>
+        <property name="text">
+         <string>启动</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>停止</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>委托流控上限(笔)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_orderFlowLimit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>委托流控清空(秒)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_orderFlowClear"/>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>单笔委托上限（数量）</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_orderSizeLimit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>总成交上限(笔)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_tradeLimit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>活动委托上限(笔)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_workingOrderLimit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>合约撤单上限(笔)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_orderCancelLimit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>保存</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>RiskManager</receiver>
+   <slot>saveButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>104</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>135</x>
+     <y>-16</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>RiskManager</receiver>
+   <slot>riskStatus_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>-8</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>saveButton_clicked()</slot>
+  <slot>riskStatus_changed()</slot>
+ </slots>
+</ui>

@@ -15,6 +15,8 @@ class CTAStrategyManager;
 class BacktesterManager;
 class BacktesterEngine;
 class ContractQueryManager;
+class RiskManager;
+class RiskManagerEngine;
 
 #pragma pack(1)
 struct UpdatePriceTableData
@@ -180,6 +182,7 @@ private slots:
 	void menu_CTAStrategy();
 	void menu_CTABacktest();
 	void menu_contractQueryclicked();
+	void menu_riskManagerclicked();
 
 	void symbol_ReturnPressed();
 	void SendOrder_clicked();
@@ -196,13 +199,14 @@ public:
 	//各种引擎管理器指针
 	EventEngine* m_eventengine;//事件驱动引擎
 	Gatewaymanager* m_gatewaymanager;//接口管理器
-	riskmanager* m_riskmanager;//风险管理器
+	RiskManagerEngine* m_riskmanagerEngine;//风险管理器
 
 	CtaEngine* m_ctaEngine;//cta管理器
 	CTAStrategyManager* m_ctaStrategyDailog=nullptr;
 	BacktesterEngine* m_backtesterEngine = nullptr;
 	BacktesterManager* m_ctaBacktesterManager= nullptr;
 	ContractQueryManager* m_ContractQueryManager= nullptr;
+	RiskManager* m_RiskManager = nullptr;
 
 
 

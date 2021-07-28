@@ -7,10 +7,11 @@
 #include"qwidget.h"
 #include<qglobal.h>
 #include"./cta_strategy/CtaEngine.h"
-#include"risk_manager/riskmanager.h"
+#include"risk_manager/RiskManagerEngine.h"
 #include"BacktesterManager.h"
 #include"cta_backtester/BacktesterEngine.h"
 #include"ContractQueryManager.h"
+#include "RiskManager.h"
 
 
 
@@ -48,7 +49,7 @@ MainWindow::~MainWindow()
 
 
 	m_gatewaymanager->exit();
-	delete m_riskmanager;
+	delete m_riskmanagerEngine;
 	delete m_ctaEngine;
 	delete m_ctaBacktesterManager;
 	delete m_gatewaymanager;
@@ -146,9 +147,9 @@ void MainWindow::LoadEngine()
 
 	m_gatewaymanager = new Gatewaymanager(m_eventengine);//接口管理器
 
-	m_riskmanager = new riskmanager(m_eventengine); //风险管理器
+	m_riskmanagerEngine = new RiskManagerEngine(m_eventengine); //风险管理器
 
-	m_ctaEngine = new CtaEngine(m_gatewaymanager, m_eventengine, m_riskmanager);//cta管理器
+	m_ctaEngine = new CtaEngine(m_gatewaymanager, m_eventengine, m_riskmanagerEngine);//cta管理器
 
 	m_backtesterEngine = new BacktesterEngine(m_eventengine);
 
@@ -714,6 +715,13 @@ void MainWindow::menu_contractQueryclicked()
 		m_ContractQueryManager = new ContractQueryManager(this);
 	m_ContractQueryManager->show();
 
+
+}
+void MainWindow::menu_riskManagerclicked()
+{
+	if (m_RiskManager == nullptr)
+		m_RiskManager = new RiskManager(this);
+	m_RiskManager->show();
 
 }
 void MainWindow::menu_CTAStrategy()

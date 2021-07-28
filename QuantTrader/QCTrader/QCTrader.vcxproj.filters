@@ -52,7 +52,7 @@
     <ClCompile Include="gateway\gatewaymanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="risk_manager\riskmanager.cpp">
+    <ClCompile Include="risk_manager\RiskManagerEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="portfolio.cpp">
@@ -115,6 +115,9 @@
     <ClCompile Include="ContractQueryManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RiskManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="event_engine\eventengine.h">
@@ -138,7 +141,7 @@
     <ClInclude Include="gateway\gatewaymanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="risk_manager\riskmanager.h">
+    <ClInclude Include="risk_manager\RiskManagerEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="portfolio.h">
@@ -186,6 +189,9 @@
     <ClInclude Include="Debug\uic\ui_ContractQueryManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Debug\uic\ui_RiskManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="CTPConnectWidgets.h">
@@ -206,6 +212,9 @@
     <QtMoc Include="ContractQueryManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="RiskManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="CTPConnectWidgets.ui">
@@ -221,6 +230,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="ContractQueryManager.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="RiskManager.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

@@ -6,7 +6,7 @@
 #include"json11.hpp"
 #include"utils.hpp"
 #include"../event_engine/eventengine.h"
-#include"../risk_manager/riskmanager.h"
+#include"../risk_manager/RiskManagerEngine.h"
 #include"../cta_strategy/StrategyTemplate.h"
 #include"../gateway/gatewaymanager.h"
 #include"../portfolio.h"
@@ -58,7 +58,7 @@ class CtaEngine :public BaseEngine
 {
 public:
 	//CTA管理器
-	CtaEngine(Gatewaymanager* gatewaymanager, EventEngine* eventengine, riskmanager* riskmanager);
+	CtaEngine(Gatewaymanager* gatewaymanager, EventEngine* eventengine, RiskManagerEngine* riskmanager);
 	~CtaEngine();
 
 	//策略所需函数
@@ -102,7 +102,7 @@ public:
 private:
 	EventEngine* m_eventengine;
 	Gatewaymanager* m_gatewaymanager;
-	riskmanager* m_riskmanager;
+	RiskManagerEngine* m_riskmanagerEngine;
 
 	//bool is_LoadStrategy;
 

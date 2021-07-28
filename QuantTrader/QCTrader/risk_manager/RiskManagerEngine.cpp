@@ -1,4 +1,4 @@
-#include"riskmanager.h"
+#include"RiskManagerEngine.h"
 #include"../event_engine/eventengine.h"
 #include"utils.hpp"
 #include<io.h>
@@ -6,7 +6,7 @@
 #include<fstream>
 #include"../qcstructs.h"
 
-riskmanager::riskmanager(EventEngine* eventengine)
+RiskManagerEngine::RiskManagerEngine(EventEngine* eventengine)
 {
 	eventengine_ptr = eventengine;
 	active = false;
@@ -17,14 +17,14 @@ riskmanager::riskmanager(EventEngine* eventengine)
 	orderSizeLimit = 0;
 	tradeCount = 0;
 	tradeLimit = 0;
-	orderCancelLimit;
+	orderCancelLimit=0;
 	workingOrderLimit = 0;
 	loadSetting();
 	registerEvent();
 }
-riskmanager::~riskmanager() {}
+RiskManagerEngine::~RiskManagerEngine() {}
 
-void riskmanager::loadSetting()
+void RiskManagerEngine::loadSetting()
 {
 	if (_access("./conf", 0) != -1)
 	{
@@ -65,25 +65,25 @@ void riskmanager::loadSetting()
 	}
 }
 
-void riskmanager::onLog(std::shared_ptr<Event>e)
+void RiskManagerEngine::onLog(std::shared_ptr<Event>e)
 {
 	eventengine_ptr->Put(e);
 }
 
-void riskmanager::registerEvent()
+void RiskManagerEngine::registerEvent()
 {
-	eventengine_ptr->RegEvent(EVENT_TRADE, std::bind(&riskmanager::updateTrade, this, std::placeholders::_1));
-	eventengine_ptr->RegEvent(EVENT_ORDER, std::bind(&riskmanager::updateOrder, this, std::placeholders::_1));
-	eventengine_ptr->RegEvent(EVENT_TIMER, std::bind(&riskmanager::updateTimer, this, std::placeholders::_1));
+	eventengine_ptr->RegEvent(EVENT_TRADE, std::bind(&RiskManagerEngine::updateTrade, this, std::placeholders::_1));
+	eventengine_ptr->RegEvent(EVENT_ORDER, std::bind(&RiskManagerEngine::updateOrder, this, std::placeholders::_1));
+	eventengine_ptr->RegEvent(EVENT_TIMER, std::bind(&RiskManagerEngine::updateTimer, this, std::placeholders::_1));
 }
 
-void riskmanager::updateTrade(std::shared_ptr<Event>e)
+void RiskManagerEngine::updateTrade(std::shared_ptr<Event>e)
 {
 	std::shared_ptr<Event_Trade> etrade = std::static_pointer_cast<Event_Trade>(e);
 	tradeCount += etrade->volume;
 }
 
-void riskmanager::updateOrder(std::shared_ptr<Event>e)
+void RiskManagerEngine::updateOrder(std::shared_ptr<Event>e)
 {
 	std::shared_ptr<Event_Order> eorder = std::static_pointer_cast<Event_Order>(e);
 	if (eorder->status != STATUS_CANCELLED)
@@ -101,7 +101,7 @@ void riskmanager::updateOrder(std::shared_ptr<Event>e)
 	}
 }
 
-void riskmanager::updateTimer(std::shared_ptr<Event>e)
+void RiskManagerEngine::updateTimer(std::shared_ptr<Event>e)
 {
 	orderFlowTimer += 1;
 
@@ -112,7 +112,7 @@ void riskmanager::updateTimer(std::shared_ptr<Event>e)
 	}
 }
 
-bool riskmanager::checkRisk(OrderReq req)
+bool RiskManagerEngine::checkRisk(OrderReq req)
 {
 	if (active == false)
 	{
@@ -167,7 +167,7 @@ bool riskmanager::checkRisk(OrderReq req)
 
 }
 
-void riskmanager::clearOrderFlowCount()
+void RiskManagerEngine::clearOrderFlowCount()
 {
 	orderFlowCount = 0;
 	std::shared_ptr<Event_Log>e = std::make_shared<Event_Log>();
@@ -176,7 +176,7 @@ void riskmanager::clearOrderFlowCount()
 	this->onLog(e);
 }
 
-void riskmanager::clearTradeCount()
+void RiskManagerEngine::clearTradeCount()
 {
 	tradeCount = 0;
 	orderFlowCount = 0;
@@ -186,33 +186,33 @@ void riskmanager::clearTradeCount()
 	this->onLog(e);
 }
 
-void riskmanager::setOrderFlowLimit(int n)
+void RiskManagerEngine::setOrderFlowLimit(int n)
 {
 	orderFlowLimit = n;
 }
 
-void riskmanager::setOrderFlowClearTime(int n)
+void RiskManagerEngine::setOrderFlowClearTime(int n)
 {
 	orderFlowClear = n;
 }
-void riskmanager::setOrderSizeLimit(int n)
+void RiskManagerEngine::setOrderSizeLimit(int n)
 {
 	orderSizeLimit = n;
 }
-void riskmanager::setTradeLimit(int n)
+void RiskManagerEngine::setTradeLimit(int n)
 {
 	tradeLimit = n;
 }
-void riskmanager::setWorkingOrderLimit(int n)
+void RiskManagerEngine::setWorkingOrderLimit(int n)
 {
 	workingOrderLimit = n;
 }
 
-void riskmanager::setOrderCancelLimit(int n)
+void RiskManagerEngine::setOrderCancelLimit(int n)
 {
 	orderCancelLimit = n;
 }
-bool riskmanager::switchEngineStatus()
+bool RiskManagerEngine::switchEngineStatus()
 {
 	
 
@@ -238,11 +238,11 @@ bool riskmanager::switchEngineStatus()
 
 }
 
-void riskmanager::saveSetting()
+void RiskManagerEngine::saveSetting()
 {
 	std::fstream f;
 	std::string a = Utils::booltostring(active);
-	f.open("./riskmanager/risk_config", std::ios::out);
+	f.open("./conf/risk_config", std::ios::out);
 	f << "active=" << Utils::booltostring(active)<< std::endl;
 	f << "orderFlowLimit=" << Utils::doubletostring(orderFlowLimit)<< std::endl;
 	f << "orderFlowClear=" << Utils::doubletostring(orderFlowClear) << std::endl;
@@ -252,5 +252,10 @@ void riskmanager::saveSetting()
 	f << "orderCalcelLimit=" << Utils::doubletostring(orderCancelLimit) << std::endl;
 
 	f.close();
+
+	std::shared_ptr<Event_Log>e = std::make_shared<Event_Log>();
+	e->msg = "风控参数已保存";
+	e->gatewayname = "riskmanager";
+	this->onLog(e);
 	
 }

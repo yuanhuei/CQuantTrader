@@ -113,7 +113,8 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="portfolio.cpp" />
     <ClCompile Include="qcustomplot-source\qcustomplot.cpp" />
-    <ClCompile Include="risk_manager\riskmanager.cpp" />
+    <ClCompile Include="RiskManager.cpp" />
+    <ClCompile Include="risk_manager\RiskManagerEngine.cpp" />
     <ClCompile Include="utility.cpp" />
     <QtRcc Include="QCTrader.qrc" />
     <QtUic Include="BacktesterManager.ui" />
@@ -129,6 +130,7 @@
     <ClCompile Include="gateway\qcgateway.hpp" />
     <ClCompile Include="QCTrader.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="RiskManager.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h" />
@@ -143,6 +145,8 @@
     <ClInclude Include="Debug\uic\ui_CTAStrategyManager.h" />
     <ClInclude Include="Debug\uic\ui_MainWindow.h" />
     <QtMoc Include="qcustomplot-source\qcustomplot.h" />
+    <QtMoc Include="RiskManager.h" />
+    <ClInclude Include="Debug\uic\ui_RiskManager.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="..\include\MongoCxx.h" />
     <ClInclude Include="AlgorithmOrder.h" />
@@ -159,7 +163,7 @@
     <ClInclude Include="json11.hpp" />
     <ClInclude Include="portfolio.h" />
     <ClInclude Include="qcstructs.h" />
-    <ClInclude Include="risk_manager\riskmanager.h" />
+    <ClInclude Include="risk_manager\RiskManagerEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

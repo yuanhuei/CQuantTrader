@@ -506,6 +506,7 @@
     </property>
     <addaction name="actionCTP"/>
     <addaction name="actionCTP_2"/>
+    <addaction name="action_3"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -557,6 +558,11 @@
     <string>查询合约</string>
    </property>
   </action>
+  <action name="action_3">
+   <property name="text">
+    <string>交易风控</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
@@ -600,8 +606,8 @@
    <slot>symbol_ReturnPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>215</x>
-     <y>116</y>
+     <x>208</x>
+     <y>125</y>
     </hint>
     <hint type="destinationlabel">
      <x>8</x>
@@ -673,6 +679,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_3</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_riskManagerclicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>630</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>menu_ctp_connect()</slot>
@@ -682,5 +704,6 @@
   <slot>menu_CTAStrategy()</slot>
   <slot>menu_CTABacktest()</slot>
   <slot>menu_contractQueryclicked()</slot>
+  <slot>menu_riskManagerclicked()</slot>
  </slots>
 </ui>

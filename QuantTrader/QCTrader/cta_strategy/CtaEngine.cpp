@@ -18,11 +18,11 @@ extern mongoc_client_pool_t* g_pool;
 typedef StrategyTemplate* (*Dllfun)(CtaEngine*);
 typedef int(*Release)();
 
-CtaEngine::CtaEngine(Gatewaymanager* gatewaymanager, EventEngine* eventengine, riskmanager* riskmanager)
+CtaEngine::CtaEngine(Gatewaymanager* gatewaymanager, EventEngine* eventengine, RiskManagerEngine* riskmanager)
 {
 	m_eventengine = eventengine;
 	m_gatewaymanager = gatewaymanager;
-	m_riskmanager = riskmanager;
+	m_riskmanagerEngine = riskmanager;
 	m_connectstatus = false;//CTP连接
 
 
@@ -821,7 +821,7 @@ void CtaEngine::autoConnect(std::shared_ptr<Event>e)
 
 			writeCtaLog("CTP接口主动断开连接！");
 			m_gatewaymanager->close("CTP");
-			m_riskmanager->clearTradeCount();
+			m_riskmanagerEngine->clearTradeCount();
 		}
 	}
 	else
@@ -872,13 +872,13 @@ std::vector<std::string>CtaEngine::sendOrder(bool bStopOrder, std::string symbol
 		req.exchange = m_gatewaymanager->GetExchangeName(symbol, "CTP");// getContract(symbol)->exchange;
 		req.price = price;
 		req.volume = volume;
-		/*
-		if (m_riskmanager->checkRisk(req) == false)
+	
+		if (m_riskmanagerEngine->checkRisk(req) == false)
 		{
 			std::vector<std::string>result;
 			return result;
 		}
-		
+		/*
 		if (Strategy->getparam("currency") != "Null" && Strategy->getparam("productClass") != "Null")
 		{
 			req.currency = Strategy->getparam("currency");

@@ -1,5 +1,5 @@
-#ifndef RISKMANAGER_H
-#define RISKMANAGER_H
+#ifndef RISKMANAGERENGINE_H
+#define RISKMANAGERENGINE_H
 #include<memory>
 #include<functional>
 #include"utils.hpp"
@@ -10,12 +10,12 @@
 class Event;
 class EventEngine;
 
-class riskmanager
+class RiskManagerEngine
 {
 
 public:
-	riskmanager(EventEngine* eventengine);
-	~riskmanager();
+	RiskManagerEngine(EventEngine* eventengine);
+	~RiskManagerEngine();
 	void loadSetting();
 	void registerEvent();
 	void onLog(std::shared_ptr<Event>e);
