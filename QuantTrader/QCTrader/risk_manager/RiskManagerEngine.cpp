@@ -118,8 +118,8 @@ bool RiskManagerEngine::checkRisk(OrderReq req)
 	{
 		return true;
 	}
-
-	if (req.volume > orderSizeLimit)
+	//如果orderSizeLimit=0作为不限制处理，其它几个参数类似
+	if (req.volume > orderSizeLimit&& orderSizeLimit!=0)
 	{
 		std::shared_ptr<Event_Log>e = std::make_shared<Event_Log>();
 		e->msg = "单笔委托数量"+ Utils::doubletostring(req.volume) + "超过限制" + Utils::doubletostring(orderSizeLimit);
@@ -128,7 +128,7 @@ bool RiskManagerEngine::checkRisk(OrderReq req)
 		return false;
 	}
 
-	if (tradeCount >= tradeLimit)
+	if (tradeCount >= tradeLimit && tradeLimit!=0)
 	{
 		std::shared_ptr<Event_Log>e = std::make_shared<Event_Log>();
 		e->msg = "今日总成交数量" + Utils::doubletostring(tradeCount) + "超过限制" + Utils::doubletostring(tradeLimit);
@@ -137,7 +137,7 @@ bool RiskManagerEngine::checkRisk(OrderReq req)
 		return false;
 	}
 
-	if (orderFlowCount >= orderFlowLimit)
+	if (orderFlowCount >= orderFlowLimit && orderFlowLimit!=0)
 	{
 		std::shared_ptr<Event_Log>e = std::make_shared<Event_Log>();
 		e->msg = "委托流数量" + Utils::doubletostring(orderFlowCount) + "超过限制" + Utils::doubletostring(orderFlowLimit);
@@ -150,7 +150,7 @@ bool RiskManagerEngine::checkRisk(OrderReq req)
 	std::lock_guard<std::mutex>lck(orderCancelMapMtx);
 	if (orderCancelMap.find(req.symbol) != orderCancelMap.end())
 	{
-		if (orderCancelMap[req.symbol] >= orderCancelLimit)
+		if (orderCancelMap[req.symbol] >= orderCancelLimit && orderCancelLimit!=0)
 		{
 			std::shared_ptr<Event_Log>e = std::make_shared<Event_Log>();
 			e->msg = "当日" + req.symbol + "撤单数量" + Utils::doubletostring(orderCancelMap[req.symbol]) 

@@ -681,6 +681,8 @@ void CtaEngine::processTradeEvent(std::shared_ptr<Event>e)
 
 		//保存交易记录
 		Global_FUC::savetraderecord(m_orderStrategymap[eTrade->orderID]->m_strategyName, eTrade,m_eventengine);
+		//保存到策略的tradelist中
+		m_orderStrategymap[eTrade->orderID]->m_tradelist.push_back(*eTrade);
 		//保存仓位信息到配置文件
 		m_orderStrategymap[eTrade->orderID]->sync_data();
 	}

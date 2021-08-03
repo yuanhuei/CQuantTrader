@@ -117,11 +117,13 @@ private:
 
 	//key 合约名（带交易所名称的例如l2109.INE)，value 策略指针(实例)vector  用在接受到tick数据时候，快速的推送到每一个策略对象
 	std::map<std::string, std::vector<StrategyTemplate*>>m_tickstrategymap;	std::mutex m_tickstrategymtx;
+
+public://这个map数据需要在CTA策略界面上读取，所以public了
 	//key 策略名+合约名, value 为策略指针    用来把界面选中的策略名 对应的的策略对象启动
 	std::map<std::string, StrategyTemplate*>m_strategymap;			std::mutex m_strategymtx;
-public://这个map数据需要在CTA策略界面上读取，所以public了
 	//orderid:: orderReq
 	std::map<std::string, std::shared_ptr<Event_StopOrder>> m_stop_order_map; std::mutex m_stop_order_mtx; 
+
 private:
 	int m_stop_order_count=1;//为了生成ID
 

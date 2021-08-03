@@ -12,6 +12,8 @@ class CTAStrategyManager : public QWidget
 public:
 	CTAStrategyManager(QWidget *parent = Q_NULLPTR);
 	~CTAStrategyManager();
+	void updatePositionTable();
+	void updateTradelistTable();
 public:
 	void InitUI();
 	//void pushLogToCTAStrategyWindow(std::string msg);
@@ -27,6 +29,8 @@ private:
 
 	QStandardItemModel* m_StrategyConf;
 	QStandardItemModel* m_StopOrderTableModel;
+	QStandardItemModel* m_PositionTableModel;
+	QStandardItemModel* m_TradeListTableModel;
 	CtaEngine* m_ctaEngine;
 private slots:
 	void addStrategy_clicked();

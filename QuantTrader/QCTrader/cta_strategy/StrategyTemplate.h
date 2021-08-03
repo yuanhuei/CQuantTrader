@@ -166,6 +166,9 @@ public:
 	//OrderList
 	std::mutex m_orderlistmtx;							//撤单锁
 	std::vector<std::string>m_orderlist;				//普通报单列表
+
+	//tradeList
+	std::vector<Event_Trade> m_tradelist;
 };
 
 #endif

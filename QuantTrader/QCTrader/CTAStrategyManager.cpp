@@ -63,8 +63,52 @@ void CTAStrategyManager::UpdateStopOrderTable()
 		i++;
 
 	}
-	m_ctaEngine->m_stop_order_mtx.lock();
+	m_ctaEngine->m_stop_order_mtx.unlock();
 	return;
+
+}
+void CTAStrategyManager::updatePositionTable()
+{
+	m_PositionTableModel->clear();
+	std::map<std::string, StrategyTemplate*>::iterator iter;
+	int i = 0;
+	for (iter = m_ctaEngine->m_strategymap.begin(); iter != m_ctaEngine->m_strategymap.end(); iter++)
+	{
+		m_PositionTableModel->setItem(i, 0, new QStandardItem(QString::fromStdString(iter->first)));
+		m_PositionTableModel->setItem(i, 1, new QStandardItem(QString::fromStdString(iter->first)));
+		m_PositionTableModel->setItem(i, 2, new QStandardItem(QString::fromStdString(std::to_string(iter->second->getpos()))));
+
+		i++;
+	}
+
+}
+void CTAStrategyManager::updateTradelistTable()
+{
+	m_TradeListTableModel->clear();
+	std::map<std::string, StrategyTemplate*>::iterator iter;
+	int i = 0;
+	for (iter = m_ctaEngine->m_strategymap.begin(); iter != m_ctaEngine->m_strategymap.end(); iter++)
+	{
+		int j;
+		for (j = 0; j < iter->second->m_tradelist.size(); j++)
+		{
+			Event_Trade* pTrade = &iter->second->m_tradelist[j];
+			m_TradeListTableModel->setItem(i + j, 0, new QStandardItem(QString::fromStdString(iter->first)));
+			m_TradeListTableModel->setItem(i + j, 1, new QStandardItem(QString::fromStdString(pTrade->tradeID)));
+			m_TradeListTableModel->setItem(i + j, 2, new QStandardItem(QString::fromStdString(pTrade->orderID)));
+			m_TradeListTableModel->setItem(i + j, 3, new QStandardItem(QString::fromStdString(pTrade->symbol)));
+			m_TradeListTableModel->setItem(i + j, 4, new QStandardItem(QString::fromStdString(pTrade->exchange)));
+			m_TradeListTableModel->setItem(i + j, 5, new QStandardItem(QString::fromStdString(pTrade->direction)));
+			m_TradeListTableModel->setItem(i + j, 6, new QStandardItem(QString::fromStdString(pTrade->offset)));
+			m_TradeListTableModel->setItem(i + j, 7, new QStandardItem(QString::fromStdString(std::to_string(pTrade->price))));
+			m_TradeListTableModel->setItem(i + j, 8, new QStandardItem(QString::fromStdString(std::to_string(pTrade->volume))));
+			m_TradeListTableModel->setItem(i + j, 9, new QStandardItem(QString::fromStdString(pTrade->tradeTime)));
+
+		}
+		i = i + j;
+
+	}
+
 
 }
 
@@ -109,6 +153,7 @@ void CTAStrategyManager::InitUI()
 	}
 	ui.pushButton->setDisabled(true);//暂时不用
 
+	//设置停止单表
 	m_StopOrderTableModel =new QStandardItemModel;
 	QStringList StopOrderTableHeader;
 	StopOrderTableHeader << str2qstr_new("停止委托号") << str2qstr_new("限价委托号") << str2qstr_new("本地代码") << str2qstr_new("方向") << str2qstr_new("开平") << str2qstr_new("价格") << str2qstr_new("数量") << str2qstr_new("状态") << str2qstr_new("锁仓") << str2qstr_new("策略名");
@@ -120,6 +165,67 @@ void CTAStrategyManager::InitUI()
 	ui.tableView_2->setSelectionBehavior(QAbstractItemView::SelectRows);  //单击选择一行  
 	ui.tableView_2->setSelectionMode(QAbstractItemView::SingleSelection); //设置只能选择一行，不能多行选中  
 	ui.tableView_2->setAlternatingRowColors(true);
+
+	//设置策略仓位表
+	m_PositionTableModel = new QStandardItemModel;
+	QStringList positionTableHeader;
+	positionTableHeader << str2qstr_new("策略名称") << str2qstr_new("开盘仓位") << str2qstr_new("当前仓位") << str2qstr_new("交易盈亏") << str2qstr_new("持仓盈亏") << str2qstr_new("总盈亏") << str2qstr_new("多头仓") << str2qstr_new("空头仓位") ;
+	m_PositionTableModel->setHorizontalHeaderLabels(positionTableHeader);
+	ui.tableView_3->setModel(m_PositionTableModel);
+	ui.tableView_3->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+	//ui.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableView_3->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	ui.tableView_3->setSelectionBehavior(QAbstractItemView::SelectRows);  //单击选择一行  
+	ui.tableView_3->setSelectionMode(QAbstractItemView::SingleSelection); //设置只能选择一行，不能多行选中  
+	ui.tableView_3->setAlternatingRowColors(true);
+	std::map<std::string, StrategyTemplate*>::iterator iter;
+	i = 0;
+	for (iter = m_ctaEngine->m_strategymap.begin(); iter != m_ctaEngine->m_strategymap.end(); iter++)
+	{
+		m_PositionTableModel->setItem(i,0,new QStandardItem(QString::fromStdString(iter->first)));
+		m_PositionTableModel->setItem(i, 1, new QStandardItem(QString::fromStdString(iter->first)));
+		m_PositionTableModel->setItem(i, 2, new QStandardItem(QString::fromStdString(std::to_string(iter->second->getpos()))));
+
+
+
+		i++;
+
+	}
+
+	//设置成交单列表
+	m_TradeListTableModel = new QStandardItemModel;
+	QStringList tradelistTableHeader;
+	tradelistTableHeader << str2qstr_new("策略名称") << str2qstr_new("成交号") << str2qstr_new("委托号") << str2qstr_new("代码") << str2qstr_new("交易所") << str2qstr_new("方向") << str2qstr_new("开平") << str2qstr_new("价格") << str2qstr_new("数量") << str2qstr_new("时间");
+	m_TradeListTableModel->setHorizontalHeaderLabels(tradelistTableHeader);
+	ui.tableView_4->setModel(m_TradeListTableModel);
+	ui.tableView_4->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+	//ui.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableView_4->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	ui.tableView_4->setSelectionBehavior(QAbstractItemView::SelectRows);  //单击选择一行  
+	ui.tableView_4->setSelectionMode(QAbstractItemView::SingleSelection); //设置只能选择一行，不能多行选中  
+	ui.tableView_4->setAlternatingRowColors(true);
+	i = 0;
+	for (iter = m_ctaEngine->m_strategymap.begin(); iter != m_ctaEngine->m_strategymap.end(); iter++)
+	{
+		int j;
+		for (j = 0; j < iter->second->m_tradelist.size(); j++)
+		{
+			Event_Trade* pTrade = &iter->second->m_tradelist[j];
+			m_TradeListTableModel->setItem(i+j, 0, new QStandardItem(QString::fromStdString(iter->first)));
+			m_TradeListTableModel->setItem(i+j, 1, new QStandardItem(QString::fromStdString(pTrade->tradeID)));
+			m_TradeListTableModel->setItem(i + j, 2, new QStandardItem(QString::fromStdString(pTrade->orderID)));
+			m_TradeListTableModel->setItem(i + j, 3, new QStandardItem(QString::fromStdString(pTrade->symbol)));
+			m_TradeListTableModel->setItem(i + j, 4, new QStandardItem(QString::fromStdString(pTrade->exchange)));
+			m_TradeListTableModel->setItem(i + j, 5, new QStandardItem(QString::fromStdString(pTrade->direction)));
+			m_TradeListTableModel->setItem(i + j, 6, new QStandardItem(QString::fromStdString(pTrade->offset)));
+			m_TradeListTableModel->setItem(i + j, 7, new QStandardItem(QString::fromStdString(std::to_string(pTrade->price))));
+			m_TradeListTableModel->setItem(i + j, 8, new QStandardItem(QString::fromStdString(std::to_string(pTrade->volume))));
+			m_TradeListTableModel->setItem(i + j, 9, new QStandardItem(QString::fromStdString(pTrade->tradeTime)));
+
+		}
+		i=i+j;
+
+	}
 
 }
 void CTAStrategyManager::addStrategy_clicked()

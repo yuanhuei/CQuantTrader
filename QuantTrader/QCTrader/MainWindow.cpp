@@ -501,6 +501,12 @@ void MainWindow::UpdateTradeTable(UpdateTradeTableData data)
 	m_TradeSubmitTableModel->setItem(i, 8, new QStandardItem(str2qstr_new(data.tradeTime)));
 	m_TradeSubmitTableModel->setItem(i, 9, new QStandardItem(str2qstr_new(data.gatewayname)));
 
+	//调用CTA策略管理部分的成交更新
+	if (m_ctaStrategyDailog != nullptr)
+	{
+		m_ctaStrategyDailog->updatePositionTable();
+		m_ctaStrategyDailog->updateTradelistTable();
+	}
 }
 
 // 
@@ -662,7 +668,12 @@ void MainWindow::UpdatePositionBox(PositionData data)
 	m_PositionModel->setItem(i, 5, new QStandardItem(QString("%1").arg(data.frozen, 0, 'f', 3)));
 	m_PositionModel->setItem(i, 6, new QStandardItem(QString("%1").arg(data.price, 0, 'f', 3)));
 
-	
+	//调用CTA策略管理部分的成交更新
+	if (m_ctaStrategyDailog != nullptr)
+	{
+		m_ctaStrategyDailog->updatePositionTable();
+		m_ctaStrategyDailog->updateTradelistTable();
+	}
 }
 
 //更新日志窗口
