@@ -110,6 +110,7 @@
     <ClCompile Include="jsoncpp\src\json_reader.cpp" />
     <ClCompile Include="jsoncpp\src\json_value.cpp" />
     <ClCompile Include="jsoncpp\src\json_writer.cpp" />
+    <ClCompile Include="KChartsWidget.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="portfolio.cpp" />
     <ClCompile Include="qcustomplot-source\qcustomplot.cpp" />
@@ -121,6 +122,7 @@
     <QtUic Include="ContractQueryManager.ui" />
     <QtUic Include="CTAStrategyManager.ui" />
     <QtUic Include="CTPConnectWidgets.ui" />
+    <QtUic Include="KChartsWidget.ui" />
     <QtUic Include="MainWindow.ui" />
     <QtUic Include="QCTrader.ui" />
     <QtMoc Include="QCTrader.h" />
@@ -141,12 +143,15 @@
     <ClInclude Include="cta_backtester\BacktesterEngine.h" />
     <ClInclude Include="cta_strategy\CtaEngine.h" />
     <ClInclude Include="cta_strategy\strategies\BollChannelStrategy.h" />
+    <ClInclude Include="Debug\uic\ui_BacktesterManager.h" />
     <ClInclude Include="Debug\uic\ui_ContractQueryManager.h" />
     <ClInclude Include="Debug\uic\ui_CTAStrategyManager.h" />
+    <ClInclude Include="Debug\uic\ui_KChartsWidget.h" />
     <ClInclude Include="Debug\uic\ui_MainWindow.h" />
     <QtMoc Include="qcustomplot-source\qcustomplot.h" />
     <QtMoc Include="RiskManager.h" />
     <ClInclude Include="Debug\uic\ui_RiskManager.h" />
+    <QtMoc Include="KChartsWidget.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="..\include\MongoCxx.h" />
     <ClInclude Include="AlgorithmOrder.h" />

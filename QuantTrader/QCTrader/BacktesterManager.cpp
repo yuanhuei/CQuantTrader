@@ -271,6 +271,12 @@ void BacktesterManager::UpdateTesterResult()
 	*/
 
 }
+void BacktesterManager::kchart_clicked()
+{
+	if (m_Kchart == nullptr)
+		m_Kchart = new KChartsWidget(this, &m_backtesterEngine->vector_history_data);
+	m_Kchart->show();
+}
 void BacktesterManager::startBacktest_clicked()
 {
 	std::string strStrategyName = ui.comboBox->currentText().toStdString();

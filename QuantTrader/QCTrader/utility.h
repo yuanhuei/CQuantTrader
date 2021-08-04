@@ -18,6 +18,7 @@ class EventEngine;
         void WriteStrategyDataJson(std::map<std::string, std::string>dataMap, std::string fileName);
         void savetraderecord(std::string strategyname, std::shared_ptr<Event_Trade>etrade, EventEngine* eventEngine);
         std::string time_t2str(time_t datetime);
+        std::vector<BarData> BarConvert(const std::vector<BarData> &v_1MinuteBarData, int iMinute=1);
     }
 
 //typedef void(StrategyTemplate::*ON_FUNC)(BarData);

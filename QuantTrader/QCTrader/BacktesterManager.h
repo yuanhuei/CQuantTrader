@@ -5,6 +5,7 @@
 #include<map>
 #include<string>
 #include"MainWindow.h"
+#include"KChartsWidget.h"
 
 class BacktesterEngine;
 class MainWindow;
@@ -20,12 +21,13 @@ public:
 
 	void InitUI();
 
-	BacktesterEngine* m_backtesterEngine;
+	BacktesterEngine* m_backtesterEngine=nullptr;
 	std::map<std::string, std::map<std::string, float>>  m_ctaStrategyMap;
 	QCPBars* m_barOverXAxis =nullptr;//x轴上的柱状图
 	QCPBars* m_barUnderXAxis = nullptr;//x轴下方的柱状图
 
-	MainWindow* m_mainwindow;
+	MainWindow* m_mainwindow=nullptr;
+	KChartsWidget* m_Kchart=nullptr;
 
 	void UpdateLogTable(LogData data);
 	void RegisterEvent();
@@ -40,4 +42,5 @@ private:
 private slots:
 	void startBacktest_clicked();
 	void UpdateTesterResult();
+	void kchart_clicked();
 };

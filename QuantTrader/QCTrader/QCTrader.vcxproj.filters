@@ -118,6 +118,9 @@
     <ClCompile Include="RiskManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KChartsWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="event_engine\eventengine.h">
@@ -192,6 +195,12 @@
     <ClInclude Include="Debug\uic\ui_RiskManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Debug\uic\ui_BacktesterManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\uic\ui_KChartsWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="CTPConnectWidgets.h">
@@ -215,6 +224,9 @@
     <QtMoc Include="RiskManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="KChartsWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="CTPConnectWidgets.ui">
@@ -233,6 +245,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="RiskManager.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="KChartsWidget.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
