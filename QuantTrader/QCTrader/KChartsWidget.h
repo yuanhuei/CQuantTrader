@@ -34,6 +34,10 @@ private slots:
 	void selectBollAction(bool bChecked);
 	void one_min_periodAction();
 	void five_min_periodAction();
+	void fifth_min_periodAction();
+	void thirty_min_periodAction();
+	void sixty_min_periodAction();
+	void define_min_periodAction();
 
 };
 /*

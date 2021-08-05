@@ -100,6 +100,38 @@ void KChartsWidget::five_min_periodAction()
 {
     updateWithPeriod(5);
 }
+void KChartsWidget::fifth_min_periodAction()
+{
+    updateWithPeriod(15);
+}
+void KChartsWidget::thirty_min_periodAction()
+{
+    updateWithPeriod(30);
+}
+void KChartsWidget::sixty_min_periodAction()
+{
+    updateWithPeriod(60);
+}
+void KChartsWidget::define_min_periodAction()
+{
+    //输入整数
+    QString dlgTitle = "输入整数对话框";
+    QString txtLabel = "请设定时间周期";
+    int defaultValue = 1; 
+    int minValue = 1, maxValue = 1000, stepValue = 1; //范围，步长
+    bool ok = false;
+    int inputValue = QInputDialog::getInt(this, dlgTitle, txtLabel,
+        defaultValue, minValue, maxValue, stepValue, &ok);
+    if (ok) //是否确认输入
+    {
+        /*
+        QFont   font = ui->plainTextEdit->font();
+        font.setPointSize(inputValue);
+        ui->plainTextEdit->setFont(font);*/
+
+        updateWithPeriod(inputValue);
+    }
+}
 void KChartsWidget::updateWithPeriod(int iMinute)
 {
     QSharedPointer<QCPAxisTickerText> textTicker(new MyAxisTickerText);     // 文字轴
@@ -185,8 +217,8 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
 
     //添加右键菜
     QMenu* MainMenu = new QMenu(this);
-    QAction* action_timeperiod = new QAction("timeperiod", MainMenu);
-    QAction* action_index = new QAction("main_index", MainMenu);
+    QAction* action_timeperiod = new QAction(str2qstr_new("时间周期"), MainMenu);
+    QAction* action_index = new QAction(str2qstr_new("主图指标"), MainMenu);
     ui.widget->addAction(action_timeperiod);
     ui.widget->addAction(action_index);
 
@@ -200,6 +232,14 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     one_min_period->setText("1min");
     QAction* five_min_period = new QAction(childMenu_timeperiod);
     five_min_period->setText("5min");
+    QAction* fifth_min_period = new QAction(childMenu_timeperiod);
+    fifth_min_period->setText("15min");
+    QAction* thirty_min_period = new QAction(childMenu_timeperiod);
+    thirty_min_period->setText("30min");
+    QAction* sixty_min_period = new QAction(childMenu_timeperiod);
+    sixty_min_period->setText("60min");
+    QAction* define_min_period = new QAction(childMenu_timeperiod);
+    define_min_period->setText(str2qstr_new("自定义"));
     QList<QAction*> childActionList;
     childActionList << one_min_period\
         << five_min_period;
@@ -238,6 +278,10 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     connect(bollAction, SIGNAL(toggled(bool)), this, SLOT(selectBollAction(bool)));
     connect(one_min_period, SIGNAL(triggered()), this, SLOT(one_min_periodAction()));
     connect(five_min_period, SIGNAL(triggered()), this, SLOT(five_min_periodAction()));
+    connect(fifth_min_period, SIGNAL(triggered()), this, SLOT(fifth_min_periodAction()));
+    connect(thirty_min_period, SIGNAL(triggered()), this, SLOT(thirty_min_periodAction()));
+    connect(sixty_min_period, SIGNAL(triggered()), this, SLOT(sixty_min_periodAction()));
+    connect(define_min_period, SIGNAL(triggered()), this, SLOT(define_min_periodAction()));
 
 
     const QColor BrushPositive("#ec0000");
