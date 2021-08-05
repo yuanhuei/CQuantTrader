@@ -766,6 +766,7 @@ void BacktesterEngine::cross_limit_order(const BarData& data)
 		ptr_trade->volume = limitOrder->tradedVolume;
 		ptr_trade->gatewayname = limitOrder->gatewayname;
 		ptr_trade->tradeTime = m_barDate;// m_datetime.toString().toStdString();
+		ptr_trade->datetime = limitOrder->orderTime;
 		ptr_trade->price = limitOrder->price;
 	
 
@@ -851,6 +852,7 @@ void BacktesterEngine::cross_stop_order(const BarData& data)
 		ptr_trade->volume = stopOrder->tradedVolume;
 		ptr_trade->gatewayname = stopOrder->gatewayname;
 		ptr_trade->tradeTime = m_barDate;// m_datetime.toString().toStdString();
+		ptr_trade->datetime = stopOrder->orderTime;
 		ptr_trade->price = stopOrder->price;
 
 		m_tradeMap[ptr_trade->tradeID] = ptr_trade;

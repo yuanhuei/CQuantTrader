@@ -563,6 +563,14 @@
     <string>交易风控</string>
    </property>
   </action>
+  <action name="actioncheck">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>check</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

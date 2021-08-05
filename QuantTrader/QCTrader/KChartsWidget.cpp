@@ -34,7 +34,8 @@ protected:
         return result;
     }
 };
-KChartsWidget::KChartsWidget(QWidget *parent, std::vector<BarData>* pBarData)
+KChartsWidget::KChartsWidget(QWidget *parent, std::vector<BarData>* pBarData, 
+     std::map<std::string, std::shared_ptr<Event_Trade>>* pTradeMap)
 	: QWidget(parent)
 {
     setWindowFlags(Qt::CustomizeWindowHint |
@@ -44,15 +45,15 @@ KChartsWidget::KChartsWidget(QWidget *parent, std::vector<BarData>* pBarData)
     setWindowFlags(Qt::Window);
 	ui.setupUi(this);
 	m_barData = pBarData;
+    m_TradeMap = pTradeMap;
     setUI(ui.widget);
 }
 
 KChartsWidget::~KChartsWidget()
 {
 }
-void KChartsWidget::selectmMaAction(bool bChecked)
+void KChartsWidget::selectMaAction(bool bChecked)
 {
-    //ui.widget->actionm
     if (maAction->isChecked())
     {
         graphMa5->setVisible(true);
@@ -74,7 +75,6 @@ void KChartsWidget::selectmMaAction(bool bChecked)
 }
 void KChartsWidget::selectBollAction(bool bChecked)
 {
-    //ui.widget->actionm
     if (bollAction->isChecked())
     {
         graphBollup->setVisible(true);
@@ -124,20 +124,12 @@ void KChartsWidget::define_min_periodAction()
         defaultValue, minValue, maxValue, stepValue, &ok);
     if (ok) //是否确认输入
     {
-        /*
-        QFont   font = ui->plainTextEdit->font();
-        font.setPointSize(inputValue);
-        ui->plainTextEdit->setFont(font);*/
-
         updateWithPeriod(inputValue);
     }
 }
 void KChartsWidget::updateWithPeriod(int iMinute)
 {
     QSharedPointer<QCPAxisTickerText> textTicker(new MyAxisTickerText);     // 文字轴
-    //textTicker->setTickCount(10);
-    //QCPDataContainer<QCPFinancialData> datas;
-    //QVector<double> timeDatas, MA5Datas, MA10Datas, MA20Datas, MA30Datas,bollup,bolldown,bollmid;
     timeDatas.clear();
     MA5Datas.clear();
     MA10Datas.clear();
@@ -147,7 +139,7 @@ void KChartsWidget::updateWithPeriod(int iMinute)
     bolldown.clear();
     bollmid.clear();
     datas.clear();
-    volumeNeg->data()->clear();// setData();
+    volumeNeg->data()->clear();
     volumePos->data()->clear();
     
 
@@ -170,10 +162,10 @@ void KChartsWidget::updateWithPeriod(int iMinute)
 
             QCPFinancialData data;
             data.key = i;
-            data.open = barData[i].open;// rawDatas.at(i).at(0);
-            data.close = barData[i].close;// rawDatas.at(i).at(1);
-            data.low = barData[i].low;// rawDatas.at(i).at(2);
-            data.high = barData[i].high;// rawDatas.at(i).at(3);
+            data.open = barData[i].open;
+            data.close = barData[i].close;
+            data.low = barData[i].low;
+            data.high = barData[i].high;
             datas.add(data);
 
             textTicker->addTick(i, QString::fromStdString(barData[i].datetime));
@@ -207,7 +199,7 @@ void KChartsWidget::updateWithPeriod(int iMinute)
     ui.widget->xAxis->setTicker(textTicker);
     volumeAxisRect->axis(QCPAxis::atBottom)->setTicker(textTicker);
 
-    selectBollAction(true);
+    selectMaAction(true);
     selectBollAction(true);
     ui.widget->replot();
 
@@ -241,7 +233,7 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     QAction* define_min_period = new QAction(childMenu_timeperiod);
     define_min_period->setText(str2qstr_new("自定义"));
     QList<QAction*> childActionList;
-    childActionList << one_min_period<< five_min_period << fifth_min_period << thirty_min_period\
+    childActionList << one_min_period << five_min_period << fifth_min_period << thirty_min_period\
         << sixty_min_period << define_min_period;
     childMenu_timeperiod->addActions(childActionList);
     //设置子菜单 归属opion
@@ -252,8 +244,8 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     //子菜单
     QMenu* childMenu_index = new QMenu();
     //子菜单的 子项
-    if(maAction==nullptr)
-         maAction = new QAction(childMenu_index);
+    if (maAction == nullptr)
+        maAction = new QAction(childMenu_index);
     maAction->setText("Ma");
     maAction->setCheckable(true);
     //maAction->che
@@ -274,7 +266,7 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     bollAction->setChecked(true);
 
     //右键处理事件
-    connect(maAction, SIGNAL(toggled(bool)), this, SLOT(selectmMaAction(bool)));
+    connect(maAction, SIGNAL(toggled(bool)), this, SLOT(selectMaAction(bool)));
     connect(bollAction, SIGNAL(toggled(bool)), this, SLOT(selectBollAction(bool)));
     connect(one_min_period, SIGNAL(triggered()), this, SLOT(one_min_periodAction()));
     connect(five_min_period, SIGNAL(triggered()), this, SLOT(five_min_periodAction()));
@@ -295,10 +287,10 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     //QCPDataContainer<QCPFinancialData> datas;
     //QVector<double> timeDatas, MA5Datas, MA10Datas, MA20Datas, MA30Datas,bollup,bolldown,bollmid;
 
-    std::vector<BarData> barData=Global_FUC::BarConvert(*m_barData,5);
+    std::vector<BarData> barData = Global_FUC::BarConvert(*m_barData, 1);
     if (m_barData != nullptr)
     {
-        for (int i = 0; i < barData.size(); i++ )
+        for (int i = 0; i < barData.size(); i++)
         {
             timeDatas.append(i);
 
@@ -310,14 +302,14 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
             data.high = barData[i].high;// rawDatas.at(i).at(3);
             datas.add(data);
 
-            textTicker->addTick(i,  QString::fromStdString(barData[i].datetime));
+            textTicker->addTick(i, QString::fromStdString(barData[i].datetime));
         }
     }
     MA5Datas = sma(barData, 5);
     MA10Datas = sma(barData, 10);
     MA20Datas = sma(barData, 20);
     MA30Datas = sma(barData, 30);
-    std::map<std::string, QVector<double>> mapBoll = boll(barData,26, 2);
+    std::map<std::string, QVector<double>> mapBoll = boll(barData, 26, 2);
     bollup = mapBoll["boll_up"];
     bolldown = mapBoll["boll_down"];
     bollmid = mapBoll["boll_middle"];
@@ -407,11 +399,11 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     for (int i = 0; i < barData.size(); ++i)
     {
         if (barData[i].open >= barData[i].close)
-            volumePos->addData(i,barData[i].volume);
+            volumePos->addData(i, barData[i].volume);
         else
-            volumeNeg->addData(i,barData[i].volume);
-       // int v = barData[i].volume;// qrand() % 20000 + qrand() % 20000 + qrand() % 20000 - 10000 * 3;
-        //(v < 0 ? volumeNeg : volumePos)->addData(startTime + 3600 * 5.0 * i, qAbs(v)); // add data to either volumeNeg or volumePos, depending on sign of v
+            volumeNeg->addData(i, barData[i].volume);
+        // int v = barData[i].volume;// qrand() % 20000 + qrand() % 20000 + qrand() % 20000 - 10000 * 3;
+         //(v < 0 ? volumeNeg : volumePos)->addData(startTime + 3600 * 5.0 * i, qAbs(v)); // add data to either volumeNeg or volumePos, depending on sign of v
     }
     volumePos->setWidth(1);
     volumePos->setPen(Qt::NoPen);
@@ -442,6 +434,68 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     QCPMarginGroup* group = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msLeft | QCP::msRight, group);
     volumeAxisRect->setMarginGroup(QCP::msLeft | QCP::msRight, group);
+
+
+    if ((*m_TradeMap).size()> 0)
+    {
+        //回测数据第一bar的时间
+        std::string str_starttime = (*m_barData)[0].datetime;
+        QDateTime qd_starttime = QDateTime::fromString(QString::fromStdString(str_starttime), "yy-MM-dd hh:mm:ss");
+
+        std::map<std::string, std::shared_ptr<Event_Trade>>::iterator iter;
+        for (iter=(*m_TradeMap).begin();iter != (*m_TradeMap).end(); iter++)
+        {
+            std::shared_ptr<Event_Trade> ptr_Trade = iter->second;
+            //成交记录bar所在的时间
+            QDateTime qd_bartime = QDateTime::fromString(QString::fromStdString(ptr_Trade->datetime), "yy-MM-dd hh:mm:ss");
+            int minutes = qd_bartime.secsTo(qd_starttime);//相隔的分钟数
+
+            
+            if (ptr_Trade->direction == DIRECTION_LONG && ptr_Trade->offset == OFFSET_OPEN)
+            {
+                timeDatas_buy.append(minutes);
+                priceDatas_buy.append(ptr_Trade->price);
+            }
+            else if (ptr_Trade->direction == DIRECTION_LONG && ptr_Trade->offset == OFFSET_CLOSE)
+            {
+                timeDatas_sell.append(minutes);
+                priceDatas_sell.append(ptr_Trade->price);
+            }
+            else if (ptr_Trade->direction == DIRECTION_SHORT && ptr_Trade->offset == OFFSET_OPEN)
+            {
+                timeDatas_sellshort.append(minutes);
+                priceDatas_sellshort.append(ptr_Trade->price);
+            }
+            else if (ptr_Trade->direction == DIRECTION_LONG && ptr_Trade->offset == OFFSET_CLOSE)
+            {
+                timeDatas_buycover.append(minutes);
+                priceDatas_buycover.append(ptr_Trade->price);
+            }
+            graphTrade_buy = customPlot->addGraph();
+            graphTrade_buy->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssTriangle, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
+            graphTrade_buy->setLineStyle(QCPGraph::LineStyle::lsNone);
+            graphTrade_buy->setData(timeDatas_buy, priceDatas_buy);
+
+            graphTrade_sell = customPlot->addGraph();
+            graphTrade_sell->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssTriangleInverted, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
+            graphTrade_sell->setLineStyle(QCPGraph::LineStyle::lsNone);
+            graphTrade_sell->setData(timeDatas_sell, priceDatas_sell);
+
+            graphTrade_sellshort = customPlot->addGraph();
+            graphTrade_sellshort->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCrossSquare, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
+            graphTrade_sellshort->setLineStyle(QCPGraph::LineStyle::lsNone);
+            graphTrade_sellshort->setData(timeDatas_sellshort, priceDatas_sellshort);
+
+            graphTrade_buycover = customPlot->addGraph();
+            graphTrade_buycover->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssPlusSquare, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
+            graphTrade_buycover->setLineStyle(QCPGraph::LineStyle::lsNone);
+            graphTrade_buycover->setData(timeDatas_buycover, priceDatas_buycover);
+
+
+        }
+
+    }
+
 }
 
 

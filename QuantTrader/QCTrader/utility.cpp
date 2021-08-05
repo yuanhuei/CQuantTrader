@@ -159,6 +159,8 @@ void Global_FUC::WriteStrategyDataJson(std::map<std::string, std::string>dataMap
 
 std::vector<BarData> Global_FUC::BarConvert(const std::vector<BarData>& v_1MinuteBarData, int iMinute)
 {
+    if (iMinute == 1)
+        return v_1MinuteBarData;
     std::vector<BarData> v_nMinuteBarData;
     int inLength = v_1MinuteBarData.size();
     int outLength = inLength / iMinute;

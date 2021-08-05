@@ -489,7 +489,8 @@ public:
 	std::string offset; //成交开平仓
 	double price;//成交价格
 	double volume;//成交量
-	std::string tradeTime;//成交时间
+	std::string tradeTime;//成交日期
+	std::string datetime;//成交具体时间
 };
 
 class   Event_Order :public Event
