@@ -50,7 +50,7 @@ KChartsWidget::KChartsWidget(QWidget *parent, std::vector<BarData>* pBarData)
 KChartsWidget::~KChartsWidget()
 {
 }
-void KChartsWidget::selectmMAction(int i)
+void KChartsWidget::selectmMaAction(bool bChecked)
 {
     //ui.widget->actionm
     if (maAction->isChecked())
@@ -69,9 +69,10 @@ void KChartsWidget::selectmMAction(int i)
         graphMa30->setVisible(false);
 
     }
+    ui.widget->replot();
 
 }
-void KChartsWidget::selectBollAction(int i)
+void KChartsWidget::selectBollAction(bool bChecked)
 {
     //ui.widget->actionm
     if (bollAction->isChecked())
@@ -88,6 +89,95 @@ void KChartsWidget::selectBollAction(int i)
         graphBollmid->setVisible(false);
 
     }
+    ui.widget->replot();
+
+}
+void KChartsWidget::one_min_periodAction()
+{
+    updateWithPeriod(1);
+}
+void KChartsWidget::five_min_periodAction()
+{
+    updateWithPeriod(5);
+}
+void KChartsWidget::updateWithPeriod(int iMinute)
+{
+    QSharedPointer<QCPAxisTickerText> textTicker(new MyAxisTickerText);     // 文字轴
+    //textTicker->setTickCount(10);
+    //QCPDataContainer<QCPFinancialData> datas;
+    //QVector<double> timeDatas, MA5Datas, MA10Datas, MA20Datas, MA30Datas,bollup,bolldown,bollmid;
+    timeDatas.clear();
+    MA5Datas.clear();
+    MA10Datas.clear();
+    MA20Datas.clear();
+    MA30Datas.clear();
+    bollup.clear();
+    bolldown.clear();
+    bollmid.clear();
+    datas.clear();
+    volumeNeg->data()->clear();// setData();
+    volumePos->data()->clear();
+    
+
+    financial->data()->clear();
+    graphBollup->data().data()->clear();
+    graphBolldown->data().data()->clear();
+    graphBollmid->data().data()->clear();
+    graphMa5->data().data()->clear();
+    graphMa10->data().data()->clear();
+    graphMa20->data().data()->clear();
+    graphMa30->data().data()->clear();
+
+
+    std::vector<BarData> barData = Global_FUC::BarConvert(*m_barData, iMinute);
+    if (m_barData != nullptr)
+    {
+        for (int i = 0; i < barData.size(); i++)
+        {
+            timeDatas.append(i);
+
+            QCPFinancialData data;
+            data.key = i;
+            data.open = barData[i].open;// rawDatas.at(i).at(0);
+            data.close = barData[i].close;// rawDatas.at(i).at(1);
+            data.low = barData[i].low;// rawDatas.at(i).at(2);
+            data.high = barData[i].high;// rawDatas.at(i).at(3);
+            datas.add(data);
+
+            textTicker->addTick(i, QString::fromStdString(barData[i].datetime));
+
+            if (barData[i].open >= barData[i].close)
+                volumePos->addData(i, barData[i].volume);
+            else
+                volumeNeg->addData(i, barData[i].volume);
+
+        }
+    }
+    MA5Datas = sma(barData, 5);
+    MA10Datas = sma(barData, 10);
+    MA20Datas = sma(barData, 20);
+    MA30Datas = sma(barData, 30);
+    std::map<std::string, QVector<double>> mapBoll = boll(barData, 26, 2);
+    bollup = mapBoll["boll_up"];
+    bolldown = mapBoll["boll_down"];
+    bollmid = mapBoll["boll_middle"];
+
+
+    financial->data()->set(datas);
+    graphBollup->setData(timeDatas, bollup);
+    graphBolldown->setData(timeDatas, bolldown);
+    graphBollmid->setData(timeDatas, bollmid);
+    graphMa5->setData(timeDatas, MA5Datas);
+    graphMa10->setData(timeDatas, MA10Datas);
+    graphMa20->setData(timeDatas, MA20Datas);
+    graphMa30->setData(timeDatas, MA30Datas);
+
+    ui.widget->xAxis->setTicker(textTicker);
+    volumeAxisRect->axis(QCPAxis::atBottom)->setTicker(textTicker);
+
+    selectBollAction(true);
+    selectBollAction(true);
+    ui.widget->replot();
 
 }
 void KChartsWidget::setUI(QCustomPlot* customPlot)
@@ -99,7 +189,8 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     QAction* action_index = new QAction("main_index", MainMenu);
     ui.widget->addAction(action_timeperiod);
     ui.widget->addAction(action_index);
-    
+
+
 
 
     //子菜单
@@ -139,12 +230,14 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     MainMenu->addMenu(childMenu_index);
     // 移动到当前鼠标所在未知
     //MainMenu->exec(QCursor::pos());
-
-
+    maAction->setChecked(true);
+    bollAction->setChecked(true);
 
     //右键处理事件
-    connect(maAction, SIGNAL(stateChanged(int)), this, SLOT(selectmMAction(int)));
-    connect(bollAction, SIGNAL(stateChanged(int)), this, SLOT(selectBollAction(int)));
+    connect(maAction, SIGNAL(toggled(bool)), this, SLOT(selectmMaAction(bool)));
+    connect(bollAction, SIGNAL(toggled(bool)), this, SLOT(selectBollAction(bool)));
+    connect(one_min_period, SIGNAL(triggered()), this, SLOT(one_min_periodAction()));
+    connect(five_min_period, SIGNAL(triggered()), this, SLOT(five_min_periodAction()));
 
 
     const QColor BrushPositive("#ec0000");
@@ -153,9 +246,9 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     const QColor PenNegative("#008f28");
 
 
-    QSharedPointer<QCPAxisTickerText> textTicker(new MyAxisTickerText);     // 文字轴
+    QSharedPointer<QCPAxisTickerText> textTicker(new MyAxisTickerText);      // 文字轴
     textTicker->setTickCount(10);
-    QCPDataContainer<QCPFinancialData> datas;
+    //QCPDataContainer<QCPFinancialData> datas;
     //QVector<double> timeDatas, MA5Datas, MA10Datas, MA20Datas, MA30Datas,bollup,bolldown,bollmid;
 
     std::vector<BarData> barData=Global_FUC::BarConvert(*m_barData,5);
@@ -186,8 +279,8 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     bollmid = mapBoll["boll_middle"];
 
     int n = barData.size();
-    QCPFinancial* financial = new QCPFinancial(customPlot->xAxis, customPlot->yAxis);
-    financial->setName("Day K");
+    financial = new QCPFinancial(customPlot->xAxis, customPlot->yAxis);
+    financial->setName("K");
     financial->setBrushPositive(BrushPositive);
     financial->setPenPositive(PenPositive);
     financial->setBrushNegative(BrushNegative);
@@ -206,7 +299,7 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     graphBolldown->setData(timeDatas, bolldown);
     graphBolldown->setPen(ColorOptions.at(0));
     graphBollmid = customPlot->addGraph();
-    graphBollmid->setName("Boll");
+    graphBollmid->setName("Bollmid");
     graphBollmid->setData(timeDatas, bollmid);
     graphBollmid->setPen(ColorOptions.at(0));
 
@@ -249,7 +342,7 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     ui.widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
 
     // create bottom axis rect for volume bar chart:
-    QCPAxisRect* volumeAxisRect = new QCPAxisRect(customPlot);
+    volumeAxisRect = new QCPAxisRect(customPlot);
     customPlot->plotLayout()->addElement(1, 0, volumeAxisRect);
     volumeAxisRect->setMaximumSize(QSize(QWIDGETSIZE_MAX, 100));
     volumeAxisRect->axis(QCPAxis::atBottom)->setLayer("axes");
@@ -260,9 +353,9 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     volumeAxisRect->setMargins(QMargins(0, 0, 0, 0));
     // create two bar plottables, for positive (green) and negative (red) volume bars:
     customPlot->setAutoAddPlottableToLegend(false);
-    QCPBars* volumePos = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
-    QCPBars* volumeNeg = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
-    QCPDataContainer<QCPBarsData> volumePos_datas, volumeNeg_datas;
+    volumePos = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
+    volumeNeg = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
+    //QCPDataContainer<QCPBarsData> volumePos_datas, volumeNeg_datas;
    // QDate date=QDate(barData[0].date
     QDateTime start = QDateTime::fromString(QString::fromStdString(barData[0].datetime), "yy-MM-dd hh:mm:ss");// QDateTime();// QDate(2014, 6, 11));
     start.setTimeSpec(Qt::UTC);
@@ -296,7 +389,7 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     customPlot->xAxis->setBasePen(Qt::NoPen);
     customPlot->xAxis->setTickLabels(false);
     customPlot->xAxis->setTicks(false); // only want vertical grid in main axis rect, so hide xAxis backbone, ticks, and labels
-    customPlot->xAxis->setTicker(dateTimeTicker);
+    //customPlot->xAxis->setTicker(dateTimeTicker);
     customPlot->rescaleAxes();
     customPlot->xAxis->scaleRange(1.025, customPlot->xAxis->range().center());
     customPlot->yAxis->scaleRange(1.1, customPlot->yAxis->range().center());
@@ -307,24 +400,6 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     volumeAxisRect->setMarginGroup(QCP::msLeft | QCP::msRight, group);
 }
 
-QVector<double> KChartsWidget::calculateMA(const QVector<QVector<double> > &v, int dayCount)
-{
-    auto func = [](double result, const QVector<double>& v2) {
-        return result + v2[1];
-    };
-
-    QVector<double> result;
-    for (int i = 0; i < v.size(); ++i) {
-        if (i < dayCount) {
-            result.append(qQNaN());
-        }
-        else {
-            double sum = std::accumulate(v.begin() + i - dayCount + 1, v.begin() + i + 1, 0.0, func);
-            result.append(sum / dayCount);
-        }
-    }
-    return result;
-}
 
 QVector<double>  KChartsWidget::sma(const std::vector<BarData>& v, int dayCount)
 {

@@ -204,7 +204,8 @@ void CTPMD::logout()
 	strncpy(myreq.BrokerID, m_brokerID.c_str(), sizeof(myreq.BrokerID) - 1);
 	strncpy(myreq.UserID, m_userID.c_str(), sizeof(myreq.UserID) - 1);
 	m_reqID++;
-	m_mdapi->ReqUserLogout(&myreq, m_reqID);
+	if(m_mdapi!=nullptr)
+		m_mdapi->ReqUserLogout(&myreq, m_reqID);
 }
 
 
