@@ -115,8 +115,8 @@ void KChartsWidget::sixty_min_periodAction()
 void KChartsWidget::define_min_periodAction()
 {
     //输入整数
-    QString dlgTitle = "输入整数对话框";
-    QString txtLabel = "请设定时间周期";
+    QString dlgTitle = str2qstr_new("自定义时间周期");
+    QString txtLabel = str2qstr_new("请输入时间周期(分钟)");
     int defaultValue = 1; 
     int minValue = 1, maxValue = 1000, stepValue = 1; //范围，步长
     bool ok = false;
@@ -241,8 +241,8 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     QAction* define_min_period = new QAction(childMenu_timeperiod);
     define_min_period->setText(str2qstr_new("自定义"));
     QList<QAction*> childActionList;
-    childActionList << one_min_period\
-        << five_min_period;
+    childActionList << one_min_period<< five_min_period << fifth_min_period << thirty_min_period\
+        << sixty_min_period << define_min_period;
     childMenu_timeperiod->addActions(childActionList);
     //设置子菜单 归属opion
     action_timeperiod->setMenu(childMenu_timeperiod);
