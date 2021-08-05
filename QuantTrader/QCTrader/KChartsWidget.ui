@@ -15,7 +15,11 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QCustomPlot" name="widget" native="true"/>
+    <widget class="QCustomPlot" name="widget" native="true">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

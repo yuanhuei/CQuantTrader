@@ -181,6 +181,11 @@ std::vector<BarData> Global_FUC::BarConvert(const std::vector<BarData>& v_1Minut
                 v_nMinuteBarData[i].low = v_1MinuteBarData[iIndex].low;
             v_nMinuteBarData[i].low =std::min(v_nMinuteBarData[i].low, v_1MinuteBarData[iIndex].low);
             v_nMinuteBarData[i].datetime = v_1MinuteBarData[iIndex].datetime;
+            if (j == 0)
+                v_nMinuteBarData[i].volume = v_1MinuteBarData[iIndex].volume;
+            else
+                v_nMinuteBarData[i].volume = v_1MinuteBarData[iIndex].volume + v_nMinuteBarData[i].volume;
+           
 
         }
 

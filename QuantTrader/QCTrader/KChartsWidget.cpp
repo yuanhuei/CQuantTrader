@@ -50,73 +50,114 @@ KChartsWidget::KChartsWidget(QWidget *parent, std::vector<BarData>* pBarData)
 KChartsWidget::~KChartsWidget()
 {
 }
+void KChartsWidget::selectmMAction(int i)
+{
+    //ui.widget->actionm
+    if (maAction->isChecked())
+    {
+        graphMa5->setVisible(true);
+        graphMa10->setVisible(true);
+        graphMa20->setVisible(true);
+        graphMa30->setVisible(true);
 
+    }
+    else
+    {
+        graphMa5->setVisible(false);
+        graphMa10->setVisible(false);
+        graphMa20->setVisible(false);
+        graphMa30->setVisible(false);
+
+    }
+
+}
+void KChartsWidget::selectBollAction(int i)
+{
+    //ui.widget->actionm
+    if (bollAction->isChecked())
+    {
+        graphBollup->setVisible(true);
+        graphBolldown->setVisible(true);
+        graphBollmid->setVisible(true);
+
+    }
+    else
+    {
+        graphBollup->setVisible(false);
+        graphBolldown->setVisible(false);
+        graphBollmid->setVisible(false);
+
+    }
+
+}
 void KChartsWidget::setUI(QCustomPlot* customPlot)
 {
+
+    //添加右键菜
+    QMenu* MainMenu = new QMenu(this);
+    QAction* action_timeperiod = new QAction("timeperiod", MainMenu);
+    QAction* action_index = new QAction("main_index", MainMenu);
+    ui.widget->addAction(action_timeperiod);
+    ui.widget->addAction(action_index);
+    
+
+
+    //子菜单
+    QMenu* childMenu_timeperiod = new QMenu();
+    //子菜单的 子项
+    QAction* one_min_period = new QAction(childMenu_timeperiod);
+    one_min_period->setText("1min");
+    QAction* five_min_period = new QAction(childMenu_timeperiod);
+    five_min_period->setText("5min");
+    QList<QAction*> childActionList;
+    childActionList << one_min_period\
+        << five_min_period;
+    childMenu_timeperiod->addActions(childActionList);
+    //设置子菜单 归属opion
+    action_timeperiod->setMenu(childMenu_timeperiod);
+    //主菜单添加子菜单
+    MainMenu->addMenu(childMenu_timeperiod);
+
+    //子菜单
+    QMenu* childMenu_index = new QMenu();
+    //子菜单的 子项
+    if(maAction==nullptr)
+         maAction = new QAction(childMenu_index);
+    maAction->setText("Ma");
+    maAction->setCheckable(true);
+    //maAction->che
+    bollAction = new QAction(childMenu_index);
+    bollAction->setText("Boll");
+    bollAction->setCheckable(true);
+    QList<QAction*> childActionListIndex;
+    childActionListIndex << maAction\
+        << bollAction;
+    childMenu_index->addActions(childActionListIndex);
+    //设置子菜单 归属opion
+    action_index->setMenu(childMenu_index);
+    //主菜单添加子菜单
+    MainMenu->addMenu(childMenu_index);
+    // 移动到当前鼠标所在未知
+    //MainMenu->exec(QCursor::pos());
+
+
+
+    //右键处理事件
+    connect(maAction, SIGNAL(stateChanged(int)), this, SLOT(selectmMAction(int)));
+    connect(bollAction, SIGNAL(stateChanged(int)), this, SLOT(selectBollAction(int)));
+
+
     const QColor BrushPositive("#ec0000");
     const QColor PenPositive("#8a0000");
     const QColor BrushNegative("#00da3c");
     const QColor PenNegative("#008f28");
 
-    const QVector<QString> rawTimes = {
-        "2013/1/24", "2013/1/25", "2013/1/28", "2013/1/29", "2013/1/30", "2013/1/31", "2013/2/1", "2013/2/4", "2013/2/5",  "2013/2/6", "2013/2/7",
-        "2013/2/8",  "2013/2/18", "2013/2/19", "2013/2/20", "2013/2/21", "2013/2/22", "2013/2/25", "2013/2/26", "2013/2/27", "2013/2/28", "2013/3/1",
-        "2013/3/4",  "2013/3/5",  "2013/3/6",  "2013/3/7", "2013/3/8",  "2013/3/11", "2013/3/12", "2013/3/13", "2013/3/14", "2013/3/15", "2013/3/18",
-        "2013/3/19", "2013/3/20", "2013/3/21", "2013/3/22", "2013/3/25", "2013/3/26", "2013/3/27", "2013/3/28", "2013/3/29", "2013/4/1", "2013/4/2",
-        "2013/4/3",  "2013/4/8",  "2013/4/9",  "2013/4/10", "2013/4/11", "2013/4/12", "2013/4/15", "2013/4/16", "2013/4/17", "2013/4/18", "2013/4/19",
-        "2013/4/22", "2013/4/23", "2013/4/24", "2013/4/25", "2013/4/26", "2013/5/2",  "2013/5/3",  "2013/5/6",  "2013/5/7",  "2013/5/8",  "2013/5/9",
-        "2013/5/10", "2013/5/13", "2013/5/14", "2013/5/15", "2013/5/16", "2013/5/17", "2013/5/20", "2013/5/21", "2013/5/22", "2013/5/23", "2013/5/24",
-        "2013/5/27", "2013/5/28", "2013/5/29", "2013/5/30", "2013/5/31", "2013/6/3",  "2013/6/4",  "2013/6/5",  "2013/6/6",  "2013/6/7",  "2013/6/13",
-    };
-    // 数据意义：开盘(open)，收盘(close)，最低(lowest)，最高(highest)
-    const QVector<QVector<double>> rawDatas = {
-        { 2320.26,2320.26,2287.3,2362.94}, { 2300,2291.3,2288.26,2308.38}, { 2295.35,2346.5,2295.35,2346.92}, { 2347.22,2358.98,2337.35,2363.8},
-        { 2360.75,2382.48,2347.89,2383.76}, { 2383.43,2385.42,2371.23,2391.82}, {2377.41,2419.02,2369.57,2421.15}, {2425.92,2428.15,2417.58,2440.38},
-        {2411,2433.13,2403.3,2437.42}, {2432.68,2434.48,2427.7,2441.73}, {2430.69,2418.53,2394.22,2433.89}, {2416.62,2432.4,2414.4,2443.03},
-        { 2441.91,2421.56,2415.43,2444.8}, { 2420.26,2382.91,2373.53,2427.07}, { 2383.49,2397.18,2370.61,2397.94}, { 2378.82,2325.95,2309.17,2378.82},
-        { 2322.94,2314.16,2308.76,2330.88}, { 2320.62,2325.82,2315.01,2338.78}, { 2313.74,2293.34,2289.89,2340.71}, { 2297.77,2313.22,2292.03,2324.63},
-        { 2322.32,2365.59,2308.92,2366.16}, {2364.54,2359.51,2330.86,2369.65}, {2332.08,2273.4,2259.25,2333.54}, {2274.81,2326.31,2270.1,2328.14},
-        {2333.61,2347.18,2321.6,2351.44}, {2340.44,2324.29,2304.27,2352.02}, {2326.42,2318.61,2314.59,2333.67}, { 2314.68,2310.59,2296.58,2320.96},
-        { 2309.16,2286.6,2264.83,2333.29}, { 2282.17,2263.97,2253.25,2286.33}, { 2255.77,2270.28,2253.31,2276.22}, { 2269.31,2278.4,2250,2312.08},
-        { 2267.29,2240.02,2239.21,2276.05}, { 2244.26,2257.43,2232.02,2261.31}, { 2257.74,2317.37,2257.42,2317.86}, { 2318.21,2324.24,2311.6,2330.81},
-        { 2321.4,2328.28,2314.97,2332}, { 2334.74,2326.72,2319.91,2344.89}, { 2318.58,2297.67,2281.12,2319.99}, { 2299.38,2301.26,2289,2323.48},
-        { 2273.55,2236.3,2232.91,2273.55}, { 2238.49,2236.62,2228.81,2246.87}, {2229.46,2234.4,2227.31,2243.95}, {2234.9,2227.74,2220.44,2253.42},
-        {2232.69,2225.29,2217.25,2241.34}, {2196.24,2211.59,2180.67,2212.59}, {2215.47,2225.77,2215.47,2234.73}, { 2224.93,2226.13,2212.56,2233.04},
-        { 2236.98,2219.55,2217.26,2242.48}, { 2218.09,2206.78,2204.44,2226.26}, { 2199.91,2181.94,2177.39,2204.99}, { 2169.63,2194.85,2165.78,2196.43},
-        { 2195.03,2193.8,2178.47,2197.51}, { 2181.82,2197.6,2175.44,2206.03}, { 2201.12,2244.64,2200.58,2250.11}, { 2236.4,2242.17,2232.26,2245.12},
-        { 2242.62,2184.54,2182.81,2242.62}, { 2187.35,2218.32,2184.11,2226.12}, { 2213.19,2199.31,2191.85,2224.63}, { 2203.89,2177.91,2173.86,2210.58},
-        {2170.78,2174.12,2161.14,2179.65}, {2179.05,2205.5,2179.05,2222.81}, {2212.5,2231.17,2212.5,2236.07}, {2227.86,2235.57,2219.44,2240.26},
-        {2242.39,2246.3,2235.42,2255.21}, {2246.96,2232.97,2221.38,2247.86}, { 2228.82,2246.83,2225.81,2247.67},  { 2247.68,2241.92,2231.36,2250.85},
-        { 2238.9,2217.01,2205.87,2239.93}, { 2217.09,2224.8,2213.58,2225.19}, { 2221.34,2251.81,2210.77,2252.87}, { 2249.81,2282.87,2248.41,2288.09},
-        { 2286.33,2299.99,2281.9,2309.39},  { 2297.11,2305.11,2290.12,2305.3},  { 2303.75,2302.4,2292.43,2314.18}, { 2293.81,2275.67,2274.1,2304.95},
-        { 2281.45,2288.53,2270.25,2292.59}, { 2286.66,2293.08,2283.94,2301.7}, { 2293.4,2321.32,2281.47,2322.1}, { 2323.54,2324.02,2321.17,2334.33},
-        { 2316.25,2317.75,2310.49,2325.72}, { 2320.74,2300.59,2299.37,2325.53}, {2300.21,2299.25,2294.11,2313.43}, {2297.1,2272.42,2264.76,2297.1},
-        {2270.71,2270.93,2260.87,2276.86}, {2264.43,2242.11,2240.07,2266.69}, {2242.26,2210.9,2205.07,2250.63}, { 2190.1,2148.35,2126.22,2190.1}
-    };
 
     QSharedPointer<QCPAxisTickerText> textTicker(new MyAxisTickerText);     // 文字轴
     textTicker->setTickCount(10);
     QCPDataContainer<QCPFinancialData> datas;
-    QVector<double> timeDatas, MA5Datas, MA10Datas, MA20Datas, MA30Datas;
+    //QVector<double> timeDatas, MA5Datas, MA10Datas, MA20Datas, MA30Datas,bollup,bolldown,bollmid;
 
-    MA5Datas = sma(*m_barData, 5);
-    MA10Datas = sma(*m_barData, 10);
-    MA20Datas = sma(*m_barData, 20);
-    MA30Datas = sma(*m_barData, 30);
-    /*
-    for (int i = 0; i < rawTimes.size(); ++i) {
-        timeDatas.append(i);
-
-        QCPFinancialData data;
-        data.key = i;
-        data.open = rawDatas.at(i).at(0);
-        data.close = rawDatas.at(i).at(1);
-        data.low = rawDatas.at(i).at(2);
-        data.high = rawDatas.at(i).at(3);
-        datas.add(data);
-
-        textTicker->addTick(i, rawTimes.at(i));
-    }*/
     std::vector<BarData> barData=Global_FUC::BarConvert(*m_barData,5);
     if (m_barData != nullptr)
     {
@@ -135,8 +176,16 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
             textTicker->addTick(i,  QString::fromStdString(barData[i].datetime));
         }
     }
+    MA5Datas = sma(barData, 5);
+    MA10Datas = sma(barData, 10);
+    MA20Datas = sma(barData, 20);
+    MA30Datas = sma(barData, 30);
+    std::map<std::string, QVector<double>> mapBoll = boll(barData,26, 2);
+    bollup = mapBoll["boll_up"];
+    bolldown = mapBoll["boll_down"];
+    bollmid = mapBoll["boll_middle"];
 
-
+    int n = barData.size();
     QCPFinancial* financial = new QCPFinancial(customPlot->xAxis, customPlot->yAxis);
     financial->setName("Day K");
     financial->setBrushPositive(BrushPositive);
@@ -148,41 +197,114 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     const QVector<QColor> ColorOptions = {
         "#c23531", "#2f4554", "#61a0a8", "#d48265"
     };
+    graphBollup = customPlot->addGraph();
+    graphBollup->setName("Boll");
+    graphBollup->setData(timeDatas, bollup);
+    graphBollup->setPen(ColorOptions.at(0));
+    graphBolldown = customPlot->addGraph();
+    graphBolldown->setName("Bolldown");
+    graphBolldown->setData(timeDatas, bolldown);
+    graphBolldown->setPen(ColorOptions.at(0));
+    graphBollmid = customPlot->addGraph();
+    graphBollmid->setName("Boll");
+    graphBollmid->setData(timeDatas, bollmid);
+    graphBollmid->setPen(ColorOptions.at(0));
 
-    QCPGraph* graph = customPlot->addGraph();
-    graph->setName("MA5");
-    //graph->setData(timeDatas, MA5Datas);
-    graph->setPen(ColorOptions.at(0));
-    graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(0), 2), QBrush(Qt::white), 8));
+    graphMa5 = customPlot->addGraph();
+    graphMa5->setName("MA5");
+    graphMa5->setData(timeDatas, MA5Datas);
+    graphMa5->setPen(ColorOptions.at(0));
+    //graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(0), 2), QBrush(Qt::white), 8));
     //graph->setSmooth(true);
 
-    graph = customPlot->addGraph();
-    graph->setName("MA10");
-   //graph->setData(timeDatas, MA10Datas);
-    graph->setPen(ColorOptions.at(1));
-    graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(1), 2), QBrush(Qt::white), 8));
+    graphMa10 = customPlot->addGraph();
+    graphMa10->setName("MA10");
+    graphMa10->setData(timeDatas, MA10Datas);
+    graphMa10->setPen(ColorOptions.at(1));
+    //graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(1), 2), QBrush(Qt::white), 8));
     //graph->setSmooth(true);
 
-    graph = customPlot->addGraph();
-    graph->setName("MA20");
-    //graph->setData(timeDatas, MA20Datas);
-    graph->setPen(ColorOptions.at(2));
-    graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(2), 2), QBrush(Qt::white), 8));
+    graphMa20 = customPlot->addGraph();
+    graphMa20->setName("MA20");
+    graphMa20->setData(timeDatas, MA20Datas);
+    graphMa20->setPen(ColorOptions.at(2));
+    //graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(2), 2), QBrush(Qt::white), 8));
     //graph->setSmooth(true);
 
-    graph = customPlot->addGraph();
-    graph->setName("MA30");
-    //graph->setData(timeDatas, MA30Datas);
-    graph->setPen(ColorOptions.at(3));
-    graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
+    graphMa30 = customPlot->addGraph();
+    graphMa30->setName("MA30");
+    graphMa30->setData(timeDatas, MA30Datas);
+    graphMa30->setPen(ColorOptions.at(3));
+    //graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
     //graph->setSmooth(true);
 
     customPlot->xAxis->setTicker(textTicker);
     customPlot->rescaleAxes();
     customPlot->xAxis->scaleRange(1.05, customPlot->xAxis->range().center());
     customPlot->yAxis->scaleRange(1.05, customPlot->yAxis->range().center());
+    //customPlot->axisRect()->addAxis(QCPAxis::atLeft)->setRange(0,100);
+   // customPlot->axisRect()->addAxis(QCPAxis::atTop);
+    //customPlot->ax
     customPlot->legend->setVisible(true);
     ui.widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+
+    // create bottom axis rect for volume bar chart:
+    QCPAxisRect* volumeAxisRect = new QCPAxisRect(customPlot);
+    customPlot->plotLayout()->addElement(1, 0, volumeAxisRect);
+    volumeAxisRect->setMaximumSize(QSize(QWIDGETSIZE_MAX, 100));
+    volumeAxisRect->axis(QCPAxis::atBottom)->setLayer("axes");
+    volumeAxisRect->axis(QCPAxis::atBottom)->grid()->setLayer("grid");
+    // bring bottom and main axis rect closer together:
+    customPlot->plotLayout()->setRowSpacing(0);
+    volumeAxisRect->setAutoMargins(QCP::msLeft | QCP::msRight | QCP::msBottom);
+    volumeAxisRect->setMargins(QMargins(0, 0, 0, 0));
+    // create two bar plottables, for positive (green) and negative (red) volume bars:
+    customPlot->setAutoAddPlottableToLegend(false);
+    QCPBars* volumePos = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
+    QCPBars* volumeNeg = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
+    QCPDataContainer<QCPBarsData> volumePos_datas, volumeNeg_datas;
+   // QDate date=QDate(barData[0].date
+    QDateTime start = QDateTime::fromString(QString::fromStdString(barData[0].datetime), "yy-MM-dd hh:mm:ss");// QDateTime();// QDate(2014, 6, 11));
+    start.setTimeSpec(Qt::UTC);
+    double startTime = start.toTime_t();
+    for (int i = 0; i < barData.size(); ++i)
+    {
+        if (barData[i].open >= barData[i].close)
+            volumePos->addData(i,barData[i].volume);
+        else
+            volumeNeg->addData(i,barData[i].volume);
+       // int v = barData[i].volume;// qrand() % 20000 + qrand() % 20000 + qrand() % 20000 - 10000 * 3;
+        //(v < 0 ? volumeNeg : volumePos)->addData(startTime + 3600 * 5.0 * i, qAbs(v)); // add data to either volumeNeg or volumePos, depending on sign of v
+    }
+    volumePos->setWidth(1);
+    volumePos->setPen(Qt::NoPen);
+    volumePos->setBrush(QColor(100, 180, 110));
+    volumeNeg->setWidth(1);
+    volumeNeg->setPen(Qt::NoPen);
+    volumeNeg->setBrush(QColor(180, 90, 90));
+    //volumePos->data()->set();
+
+    // interconnect x axis ranges of main and bottom axis rects:
+    connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), volumeAxisRect->axis(QCPAxis::atBottom), SLOT(setRange(QCPRange)));
+    connect(volumeAxisRect->axis(QCPAxis::atBottom), SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis, SLOT(setRange(QCPRange)));
+    // configure axes of both main and bottom axis rect:
+    QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
+    dateTimeTicker->setDateTimeSpec(Qt::UTC);
+    dateTimeTicker->setDateTimeFormat("dd. MMMM");
+    volumeAxisRect->axis(QCPAxis::atBottom)->setTicker(textTicker);// dateTimeTicker);
+    //volumeAxisRect->axis(QCPAxis::atBottom)->setTickLabelRotation(15);
+    customPlot->xAxis->setBasePen(Qt::NoPen);
+    customPlot->xAxis->setTickLabels(false);
+    customPlot->xAxis->setTicks(false); // only want vertical grid in main axis rect, so hide xAxis backbone, ticks, and labels
+    customPlot->xAxis->setTicker(dateTimeTicker);
+    customPlot->rescaleAxes();
+    customPlot->xAxis->scaleRange(1.025, customPlot->xAxis->range().center());
+    customPlot->yAxis->scaleRange(1.1, customPlot->yAxis->range().center());
+
+    // make axis rects' left side line up:
+    QCPMarginGroup* group = new QCPMarginGroup(customPlot);
+    customPlot->axisRect()->setMarginGroup(QCP::msLeft | QCP::msRight, group);
+    volumeAxisRect->setMarginGroup(QCP::msLeft | QCP::msRight, group);
 }
 
 QVector<double> KChartsWidget::calculateMA(const QVector<QVector<double> > &v, int dayCount)
@@ -234,4 +356,56 @@ QVector<double>  KChartsWidget::sma(const std::vector<BarData>& v, int dayCount)
     delete[] inReal;
     delete[] outReal;
     return result;
+}
+
+std::map<std::string, QVector<double>> KChartsWidget::boll(const std::vector<BarData>& vBarData,int iWindow, int iDev)
+{
+    std::map<std::string, QVector<double>> mapBoll;
+    QVector<double> bollup, bolldown, bollmid;
+    int            startIdx = 0;
+    int            endIdx = vBarData.size() - 1;
+    //double        inReal[100];
+    double* inReal = new double[vBarData.size()];// [100] ;
+    int           optInTimePeriod = iWindow; /* From 2 to 100000 */
+    double        optInNbDevUp = iDev; /* From TA_REAL_MIN to TA_REAL_MAX */
+    double        optInNbDevDn = iDev; /* From TA_REAL_MIN to TA_REAL_MAX */
+    TA_MAType     optInMAType = TA_MAType_SMA;
+    int          outBegIdx;
+    int          outNBElement;
+    //double        outRealUpperBand[100];
+    double* outRealUpperBand = new double[vBarData.size()];
+    double* outRealMiddleBand = new double[vBarData.size()];
+    double* outRealLowerBand = new double[vBarData.size()];
+
+    //double        outRealMiddleBand[100];
+    //double        outRealLowerBand[100];
+
+    for (int i = 0; i < vBarData.size(); i++)
+    {
+        inReal[i] = vBarData[i].close;
+    }
+
+    TA_BBANDS(startIdx, endIdx, inReal, optInTimePeriod, optInNbDevDn,
+        optInNbDevDn, optInMAType, &outBegIdx, &outNBElement, outRealUpperBand, outRealMiddleBand, outRealLowerBand);
+    for (int i = 0; i < iWindow; i++)
+    {
+        bollup.append(qQNaN());
+        bolldown.append(qQNaN());
+        bollmid.append(qQNaN());
+
+    }
+    for (int i = 0; i < vBarData.size(); i++)
+    {
+        bollup.append(outRealUpperBand[i]);
+        bolldown.append(outRealLowerBand[i]);
+        bollmid.append(outRealMiddleBand[i]);
+
+    }
+    mapBoll["boll_up"] = bollup;
+    mapBoll["boll_middle"] = bollmid;
+    mapBoll["boll_down"] = bolldown;
+    delete[] inReal;
+    delete[]  outRealUpperBand, outRealMiddleBand, outRealLowerBand;
+    return mapBoll;
+
 }
