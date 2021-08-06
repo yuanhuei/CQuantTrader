@@ -18,6 +18,7 @@
 5.CTA回测K线和开平仓显示
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/115611_41c079fd_9459957.png "temp.png")
 6.交易风控
+
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/131757_39f451fa_9459957.png "risk.png")
 
 #### 安装教程
