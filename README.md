@@ -15,7 +15,7 @@
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/115628_b162b9c5_9459957.png "cta.png")
 4.CTA回测
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/141041_695d2f29_9459957.jpeg "CTA回测.jpg")
-5.CTA回测K线已经开平仓显示
+5.CTA回测K线和开平仓显示
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/115611_41c079fd_9459957.png "temp.png")
 #### 安装教程
 
