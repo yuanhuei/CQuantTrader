@@ -13,13 +13,18 @@ public:
 	KChartsWidget(QWidget *parent = Q_NULLPTR, std::vector<BarData>* pBarData=nullptr,
 		 std::map<std::string, std::shared_ptr<Event_Trade>> *pTradeMap=nullptr);
 	~KChartsWidget();
-	void setUI(QCustomPlot* customPlot);
+	void setUI();
+	void setRightMouseMenu();
+	void setMainGraph();
+	void setTradeGraph(int iMinutePeriod =1);
+
 	QVector<double>  sma(const std::vector<BarData>& v, int dayCount);
 	std::map<std::string, QVector<double>> boll(const std::vector<BarData>& v,int iWindow, int iDev);
 
 private:
 	Ui::KChartsWidget ui;
 	std::vector<BarData>* m_barData;
+	std::map <std::string, int > m_mapBarNumber;//根据datetime来获取是m_barData中的第几根bar
 	std::map<std::string, std::shared_ptr<Event_Trade>>* m_TradeMap;
 
 	QAction* maAction=nullptr,*bollAction;

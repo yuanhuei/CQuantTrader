@@ -516,7 +516,7 @@
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
-   <header location="global">qcustomplot.h</header>
+   <header>qcustomplot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -545,12 +545,12 @@
    <slot>kchart_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>162</x>
-     <y>478</y>
+     <x>164</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
-     <x>254</x>
-     <y>583</y>
+     <x>232</x>
+     <y>594</y>
     </hint>
    </hints>
   </connection>

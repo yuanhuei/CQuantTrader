@@ -5,6 +5,14 @@
 #include<math.h>
 #include"utility.h"
 
+const QColor BrushPositive("#ec0000");
+const QColor PenPositive("#8a0000");
+const QColor BrushNegative("#00da3c");
+const QColor PenNegative("#008f28");
+const QVector<QColor> ColorOptions = {
+    "#c23531", "#2f4554", "#61a0a8", "#d48265"
+};
+
 class MyAxisTickerText : public QCPAxisTickerText
 {
 protected:
@@ -46,7 +54,12 @@ KChartsWidget::KChartsWidget(QWidget *parent, std::vector<BarData>* pBarData,
 	ui.setupUi(this);
 	m_barData = pBarData;
     m_TradeMap = pTradeMap;
-    setUI(ui.widget);
+    for (int i = 0; i < (*m_barData).size(); i++)
+    {
+        m_mapBarNumber[(*m_barData)[i].datetime] = i;
+
+    }
+    setUI();
 }
 
 KChartsWidget::~KChartsWidget()
@@ -141,7 +154,16 @@ void KChartsWidget::updateWithPeriod(int iMinute)
     datas.clear();
     volumeNeg->data()->clear();
     volumePos->data()->clear();
-    
+
+    timeDatas_buy.clear();
+    timeDatas_sell.clear();
+    timeDatas_sellshort.clear();
+    timeDatas_buycover.clear();
+    priceDatas_buy.clear();
+    priceDatas_sell.clear();
+    priceDatas_sellshort.clear();
+    priceDatas_buycover.clear();
+
 
     financial->data()->clear();
     graphBollup->data().data()->clear();
@@ -151,6 +173,12 @@ void KChartsWidget::updateWithPeriod(int iMinute)
     graphMa10->data().data()->clear();
     graphMa20->data().data()->clear();
     graphMa30->data().data()->clear();
+    
+    graphTrade_buy->data().data()->clear();
+    graphTrade_sell->data().data()->clear();
+    graphTrade_sellshort->data().data()->clear();
+    graphTrade_buycover->data().data()->clear();
+    
 
 
     std::vector<BarData> barData = Global_FUC::BarConvert(*m_barData, iMinute);
@@ -199,23 +227,25 @@ void KChartsWidget::updateWithPeriod(int iMinute)
     ui.widget->xAxis->setTicker(textTicker);
     volumeAxisRect->axis(QCPAxis::atBottom)->setTicker(textTicker);
 
+    setTradeGraph(iMinute);
+
     selectMaAction(true);
     selectBollAction(true);
+
+    ui.widget->rescaleAxes();
+    ui.widget->xAxis->scaleRange(1.025, ui.widget->xAxis->range().center());
+    ui.widget->yAxis->scaleRange(1.1, ui.widget->yAxis->range().center());
     ui.widget->replot();
 
 }
-void KChartsWidget::setUI(QCustomPlot* customPlot)
+void KChartsWidget::setRightMouseMenu()
 {
-
     //添加右键菜
     QMenu* MainMenu = new QMenu(this);
     QAction* action_timeperiod = new QAction(str2qstr_new("时间周期"), MainMenu);
     QAction* action_index = new QAction(str2qstr_new("主图指标"), MainMenu);
     ui.widget->addAction(action_timeperiod);
     ui.widget->addAction(action_index);
-
-
-
 
     //子菜单
     QMenu* childMenu_timeperiod = new QMenu();
@@ -276,10 +306,10 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     connect(define_min_period, SIGNAL(triggered()), this, SLOT(define_min_periodAction()));
 
 
-    const QColor BrushPositive("#ec0000");
-    const QColor PenPositive("#8a0000");
-    const QColor BrushNegative("#00da3c");
-    const QColor PenNegative("#008f28");
+}
+void KChartsWidget::setMainGraph()
+{
+
 
 
     QSharedPointer<QCPAxisTickerText> textTicker(new MyAxisTickerText);      // 文字轴
@@ -287,35 +317,34 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     //QCPDataContainer<QCPFinancialData> datas;
     //QVector<double> timeDatas, MA5Datas, MA10Datas, MA20Datas, MA30Datas,bollup,bolldown,bollmid;
 
-    std::vector<BarData> barData = Global_FUC::BarConvert(*m_barData, 1);
+    
     if (m_barData != nullptr)
     {
-        for (int i = 0; i < barData.size(); i++)
+        for (int i = 0; i < (*m_barData).size(); i++)
         {
             timeDatas.append(i);
 
             QCPFinancialData data;
             data.key = i;
-            data.open = barData[i].open;// rawDatas.at(i).at(0);
-            data.close = barData[i].close;// rawDatas.at(i).at(1);
-            data.low = barData[i].low;// rawDatas.at(i).at(2);
-            data.high = barData[i].high;// rawDatas.at(i).at(3);
+            data.open = (*m_barData)[i].open;// rawDatas.at(i).at(0);
+            data.close = (*m_barData)[i].close;// rawDatas.at(i).at(1);
+            data.low = (*m_barData)[i].low;// rawDatas.at(i).at(2);
+            data.high = (*m_barData)[i].high;// rawDatas.at(i).at(3);
             datas.add(data);
 
-            textTicker->addTick(i, QString::fromStdString(barData[i].datetime));
+            textTicker->addTick(i, QString::fromStdString((*m_barData)[i].datetime));
         }
     }
-    MA5Datas = sma(barData, 5);
-    MA10Datas = sma(barData, 10);
-    MA20Datas = sma(barData, 20);
-    MA30Datas = sma(barData, 30);
-    std::map<std::string, QVector<double>> mapBoll = boll(barData, 26, 2);
+    MA5Datas = sma((*m_barData), 5);
+    MA10Datas = sma((*m_barData), 10);
+    MA20Datas = sma((*m_barData), 20);
+    MA30Datas = sma((*m_barData), 30);
+    std::map<std::string, QVector<double>> mapBoll = boll((*m_barData), 26, 2);
     bollup = mapBoll["boll_up"];
     bolldown = mapBoll["boll_down"];
     bollmid = mapBoll["boll_middle"];
 
-    int n = barData.size();
-    financial = new QCPFinancial(customPlot->xAxis, customPlot->yAxis);
+    financial = new QCPFinancial(ui.widget->xAxis, ui.widget->yAxis);
     financial->setName("K");
     financial->setBrushPositive(BrushPositive);
     financial->setPenPositive(PenPositive);
@@ -323,85 +352,154 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     financial->setPenNegative(PenNegative);
     financial->data()->set(datas);
 
-    const QVector<QColor> ColorOptions = {
-        "#c23531", "#2f4554", "#61a0a8", "#d48265"
-    };
-    graphBollup = customPlot->addGraph();
+
+    graphBollup = ui.widget->addGraph();
     graphBollup->setName("Boll");
     graphBollup->setData(timeDatas, bollup);
     graphBollup->setPen(ColorOptions.at(0));
-    graphBolldown = customPlot->addGraph();
+    graphBolldown = ui.widget->addGraph();
     graphBolldown->setName("Bolldown");
     graphBolldown->setData(timeDatas, bolldown);
     graphBolldown->setPen(ColorOptions.at(0));
-    graphBollmid = customPlot->addGraph();
+    graphBollmid = ui.widget->addGraph();
     graphBollmid->setName("Bollmid");
     graphBollmid->setData(timeDatas, bollmid);
     graphBollmid->setPen(ColorOptions.at(0));
 
-    graphMa5 = customPlot->addGraph();
+    graphMa5 = ui.widget->addGraph();
     graphMa5->setName("MA5");
     graphMa5->setData(timeDatas, MA5Datas);
     graphMa5->setPen(ColorOptions.at(0));
     //graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(0), 2), QBrush(Qt::white), 8));
     //graph->setSmooth(true);
 
-    graphMa10 = customPlot->addGraph();
+    graphMa10 = ui.widget->addGraph();
     graphMa10->setName("MA10");
     graphMa10->setData(timeDatas, MA10Datas);
     graphMa10->setPen(ColorOptions.at(1));
     //graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(1), 2), QBrush(Qt::white), 8));
     //graph->setSmooth(true);
 
-    graphMa20 = customPlot->addGraph();
+    graphMa20 = ui.widget->addGraph();
     graphMa20->setName("MA20");
     graphMa20->setData(timeDatas, MA20Datas);
     graphMa20->setPen(ColorOptions.at(2));
     //graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(2), 2), QBrush(Qt::white), 8));
     //graph->setSmooth(true);
 
-    graphMa30 = customPlot->addGraph();
+    graphMa30 = ui.widget->addGraph();
     graphMa30->setName("MA30");
     graphMa30->setData(timeDatas, MA30Datas);
     graphMa30->setPen(ColorOptions.at(3));
     //graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
     //graph->setSmooth(true);
 
-    customPlot->xAxis->setTicker(textTicker);
-    customPlot->rescaleAxes();
-    customPlot->xAxis->scaleRange(1.05, customPlot->xAxis->range().center());
-    customPlot->yAxis->scaleRange(1.05, customPlot->yAxis->range().center());
+    ui.widget->xAxis->setTicker(textTicker);
+    ui.widget->rescaleAxes();
+    ui.widget->xAxis->scaleRange(1.05, ui.widget->xAxis->range().center());
+    ui.widget->yAxis->scaleRange(1.05, ui.widget->yAxis->range().center());
     //customPlot->axisRect()->addAxis(QCPAxis::atLeft)->setRange(0,100);
    // customPlot->axisRect()->addAxis(QCPAxis::atTop);
     //customPlot->ax
-    customPlot->legend->setVisible(true);
+    //ui.widget->legend->setVisible(true);
     ui.widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
 
+}
+void KChartsWidget::setTradeGraph(int iMinutePeriod)
+{
+    if ((*m_TradeMap).size() > 0)
+    {
+        //回测数据第一bar的时间
+       // std::string str_starttime = (*m_barData)[0].datetime;
+        //QDateTime qd_starttime = QDateTime::fromString(QString::fromStdString(str_starttime), "yyyy-MM-dd hh:mm:ss");
+
+        std::map<std::string, std::shared_ptr<Event_Trade>>::iterator iter;
+        for (iter = (*m_TradeMap).begin(); iter != (*m_TradeMap).end(); iter++)
+        {
+            std::shared_ptr<Event_Trade> ptr_Trade = iter->second;
+            //成交记录bar所在的时间
+            //QDateTime qd_bartime = QDateTime::fromString(QString::fromStdString(ptr_Trade->datetime), "yyyy-MM-dd hh:mm:ss");
+            int minutes = m_mapBarNumber[ptr_Trade->datetime];//相隔的分钟数
+            int iXas = minutes / iMinutePeriod;//x坐标
+            if (iXas * iMinutePeriod < minutes)
+                iXas = iXas + 1;
+
+
+            if (ptr_Trade->direction == DIRECTION_LONG && ptr_Trade->offset == OFFSET_OPEN)
+            {
+                timeDatas_buy.append(iXas);
+                priceDatas_buy.append(ptr_Trade->price);
+            }
+            else if (ptr_Trade->direction == DIRECTION_LONG && ptr_Trade->offset == OFFSET_CLOSE)
+            {
+                timeDatas_sell.append(iXas);
+                priceDatas_sell.append(ptr_Trade->price);
+            }
+            else if (ptr_Trade->direction == DIRECTION_SHORT && ptr_Trade->offset == OFFSET_OPEN)
+            {
+                timeDatas_sellshort.append(iXas);
+                priceDatas_sellshort.append(ptr_Trade->price);
+            }
+            else if (ptr_Trade->direction == DIRECTION_SHORT && ptr_Trade->offset == OFFSET_CLOSE)
+            {
+                timeDatas_buycover.append(iXas);
+                priceDatas_buycover.append(ptr_Trade->price);
+            }
+        }
+        graphTrade_buy = ui.widget->addGraph();
+        graphTrade_buy->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssTriangle, QPen(Qt::red, 2), QBrush(Qt::red), 12));
+        graphTrade_buy->setLineStyle(QCPGraph::LineStyle::lsNone);
+        graphTrade_buy->setData(timeDatas_buy, priceDatas_buy);
+
+        graphTrade_sell = ui.widget->addGraph();
+        graphTrade_sell->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssTriangleInverted, QPen(Qt::red, 2), QBrush(Qt::red), 12));
+        graphTrade_sell->setLineStyle(QCPGraph::LineStyle::lsNone);
+        graphTrade_sell->setData(timeDatas_sell, priceDatas_sell);
+
+        graphTrade_sellshort = ui.widget->addGraph();
+        graphTrade_sellshort->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssTriangleInverted, QPen(Qt::green, 2), QBrush(Qt::green), 12));
+        graphTrade_sellshort->setLineStyle(QCPGraph::LineStyle::lsNone);
+        graphTrade_sellshort->setData(timeDatas_sellshort, priceDatas_sellshort);
+
+        graphTrade_buycover = ui.widget->addGraph();
+        graphTrade_buycover->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssTriangle, QPen(Qt::green, 2), QBrush(Qt::green), 12));
+        graphTrade_buycover->setLineStyle(QCPGraph::LineStyle::lsNone);
+        graphTrade_buycover->setData(timeDatas_buycover, priceDatas_buycover);
+    }
+
+}
+void KChartsWidget::setUI()
+{
+    //std::vector<BarData> barData = Global_FUC::BarConvert(*m_barData, 1);
+    setRightMouseMenu();
+    setMainGraph();
+    setTradeGraph();
+
     // create bottom axis rect for volume bar chart:
-    volumeAxisRect = new QCPAxisRect(customPlot);
-    customPlot->plotLayout()->addElement(1, 0, volumeAxisRect);
+    volumeAxisRect = new QCPAxisRect(ui.widget);
+    ui.widget->plotLayout()->addElement(1, 0, volumeAxisRect);
     volumeAxisRect->setMaximumSize(QSize(QWIDGETSIZE_MAX, 100));
     volumeAxisRect->axis(QCPAxis::atBottom)->setLayer("axes");
     volumeAxisRect->axis(QCPAxis::atBottom)->grid()->setLayer("grid");
     // bring bottom and main axis rect closer together:
-    customPlot->plotLayout()->setRowSpacing(0);
+    ui.widget->plotLayout()->setRowSpacing(0);
     volumeAxisRect->setAutoMargins(QCP::msLeft | QCP::msRight | QCP::msBottom);
     volumeAxisRect->setMargins(QMargins(0, 0, 0, 0));
     // create two bar plottables, for positive (green) and negative (red) volume bars:
-    customPlot->setAutoAddPlottableToLegend(false);
+    ui.widget->setAutoAddPlottableToLegend(false);
     volumePos = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
     volumeNeg = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
     //QCPDataContainer<QCPBarsData> volumePos_datas, volumeNeg_datas;
    // QDate date=QDate(barData[0].date
-    QDateTime start = QDateTime::fromString(QString::fromStdString(barData[0].datetime), "yy-MM-dd hh:mm:ss");// QDateTime();// QDate(2014, 6, 11));
-    start.setTimeSpec(Qt::UTC);
-    double startTime = start.toTime_t();
-    for (int i = 0; i < barData.size(); ++i)
+    //QDateTime start = QDateTime::fromString(QString::fromStdString(barData[0].datetime), "yy-MM-dd hh:mm:ss");// QDateTime();// QDate(2014, 6, 11));
+    //start.setTimeSpec(Qt::UTC);
+    //double startTime = start.toTime_t();
+    for (int i = 0; i < (*m_barData).size(); ++i)
     {
-        if (barData[i].open >= barData[i].close)
-            volumePos->addData(i, barData[i].volume);
+        if ((*m_barData)[i].open >= (*m_barData)[i].close)
+            volumePos->addData(i, (*m_barData)[i].volume);
         else
-            volumeNeg->addData(i, barData[i].volume);
+            volumeNeg->addData(i, (*m_barData)[i].volume);
         // int v = barData[i].volume;// qrand() % 20000 + qrand() % 20000 + qrand() % 20000 - 10000 * 3;
          //(v < 0 ? volumeNeg : volumePos)->addData(startTime + 3600 * 5.0 * i, qAbs(v)); // add data to either volumeNeg or volumePos, depending on sign of v
     }
@@ -414,88 +512,26 @@ void KChartsWidget::setUI(QCustomPlot* customPlot)
     //volumePos->data()->set();
 
     // interconnect x axis ranges of main and bottom axis rects:
-    connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), volumeAxisRect->axis(QCPAxis::atBottom), SLOT(setRange(QCPRange)));
-    connect(volumeAxisRect->axis(QCPAxis::atBottom), SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis, SLOT(setRange(QCPRange)));
+    connect(ui.widget->xAxis, SIGNAL(rangeChanged(QCPRange)), volumeAxisRect->axis(QCPAxis::atBottom), SLOT(setRange(QCPRange)));
+    connect(volumeAxisRect->axis(QCPAxis::atBottom), SIGNAL(rangeChanged(QCPRange)), ui.widget->xAxis, SLOT(setRange(QCPRange)));
     // configure axes of both main and bottom axis rect:
     QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
     dateTimeTicker->setDateTimeSpec(Qt::UTC);
     dateTimeTicker->setDateTimeFormat("dd. MMMM");
     volumeAxisRect->axis(QCPAxis::atBottom)->setTicker(textTicker);// dateTimeTicker);
     //volumeAxisRect->axis(QCPAxis::atBottom)->setTickLabelRotation(15);
-    customPlot->xAxis->setBasePen(Qt::NoPen);
-    customPlot->xAxis->setTickLabels(false);
-    customPlot->xAxis->setTicks(false); // only want vertical grid in main axis rect, so hide xAxis backbone, ticks, and labels
+    ui.widget->xAxis->setBasePen(Qt::NoPen);
+    ui.widget->xAxis->setTickLabels(false);
+    ui.widget->xAxis->setTicks(false); // only want vertical grid in main axis rect, so hide xAxis backbone, ticks, and labels
     //customPlot->xAxis->setTicker(dateTimeTicker);
-    customPlot->rescaleAxes();
-    customPlot->xAxis->scaleRange(1.025, customPlot->xAxis->range().center());
-    customPlot->yAxis->scaleRange(1.1, customPlot->yAxis->range().center());
+    ui.widget->rescaleAxes();
+    ui.widget->xAxis->scaleRange(1.025, ui.widget->xAxis->range().center());
+    ui.widget->yAxis->scaleRange(1.1, ui.widget->yAxis->range().center());
 
     // make axis rects' left side line up:
-    QCPMarginGroup* group = new QCPMarginGroup(customPlot);
-    customPlot->axisRect()->setMarginGroup(QCP::msLeft | QCP::msRight, group);
+    QCPMarginGroup* group = new QCPMarginGroup(ui.widget);
+    ui.widget->axisRect()->setMarginGroup(QCP::msLeft | QCP::msRight, group);
     volumeAxisRect->setMarginGroup(QCP::msLeft | QCP::msRight, group);
-
-
-    if ((*m_TradeMap).size()> 0)
-    {
-        //回测数据第一bar的时间
-        std::string str_starttime = (*m_barData)[0].datetime;
-        QDateTime qd_starttime = QDateTime::fromString(QString::fromStdString(str_starttime), "yy-MM-dd hh:mm:ss");
-
-        std::map<std::string, std::shared_ptr<Event_Trade>>::iterator iter;
-        for (iter=(*m_TradeMap).begin();iter != (*m_TradeMap).end(); iter++)
-        {
-            std::shared_ptr<Event_Trade> ptr_Trade = iter->second;
-            //成交记录bar所在的时间
-            QDateTime qd_bartime = QDateTime::fromString(QString::fromStdString(ptr_Trade->datetime), "yy-MM-dd hh:mm:ss");
-            int minutes = qd_bartime.secsTo(qd_starttime);//相隔的分钟数
-
-            
-            if (ptr_Trade->direction == DIRECTION_LONG && ptr_Trade->offset == OFFSET_OPEN)
-            {
-                timeDatas_buy.append(minutes);
-                priceDatas_buy.append(ptr_Trade->price);
-            }
-            else if (ptr_Trade->direction == DIRECTION_LONG && ptr_Trade->offset == OFFSET_CLOSE)
-            {
-                timeDatas_sell.append(minutes);
-                priceDatas_sell.append(ptr_Trade->price);
-            }
-            else if (ptr_Trade->direction == DIRECTION_SHORT && ptr_Trade->offset == OFFSET_OPEN)
-            {
-                timeDatas_sellshort.append(minutes);
-                priceDatas_sellshort.append(ptr_Trade->price);
-            }
-            else if (ptr_Trade->direction == DIRECTION_LONG && ptr_Trade->offset == OFFSET_CLOSE)
-            {
-                timeDatas_buycover.append(minutes);
-                priceDatas_buycover.append(ptr_Trade->price);
-            }
-            graphTrade_buy = customPlot->addGraph();
-            graphTrade_buy->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssTriangle, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
-            graphTrade_buy->setLineStyle(QCPGraph::LineStyle::lsNone);
-            graphTrade_buy->setData(timeDatas_buy, priceDatas_buy);
-
-            graphTrade_sell = customPlot->addGraph();
-            graphTrade_sell->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssTriangleInverted, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
-            graphTrade_sell->setLineStyle(QCPGraph::LineStyle::lsNone);
-            graphTrade_sell->setData(timeDatas_sell, priceDatas_sell);
-
-            graphTrade_sellshort = customPlot->addGraph();
-            graphTrade_sellshort->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCrossSquare, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
-            graphTrade_sellshort->setLineStyle(QCPGraph::LineStyle::lsNone);
-            graphTrade_sellshort->setData(timeDatas_sellshort, priceDatas_sellshort);
-
-            graphTrade_buycover = customPlot->addGraph();
-            graphTrade_buycover->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssPlusSquare, QPen(ColorOptions.at(3), 2), QBrush(Qt::white), 8));
-            graphTrade_buycover->setLineStyle(QCPGraph::LineStyle::lsNone);
-            graphTrade_buycover->setData(timeDatas_buycover, priceDatas_buycover);
-
-
-        }
-
-    }
-
 }
 
 
