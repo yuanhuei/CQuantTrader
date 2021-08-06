@@ -8,6 +8,7 @@
 
 #######软件功能
 1.CTP连接，行情订阅，下单，订单管理，仓位和账户查询
+
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/132250_2ee4a6da_9459957.png "ctp连接.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/140614_3623bcc0_9459957.jpeg "图像 5.jpg")
 2.合约查询
