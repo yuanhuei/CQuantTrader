@@ -309,9 +309,6 @@ void KChartsWidget::setRightMouseMenu()
 }
 void KChartsWidget::setMainGraph()
 {
-
-
-
     QSharedPointer<QCPAxisTickerText> textTicker(new MyAxisTickerText);      // ÎÄ×ÖÖá
     textTicker->setTickCount(10);
     //QCPDataContainer<QCPFinancialData> datas;

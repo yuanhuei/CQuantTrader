@@ -116,6 +116,7 @@
     <ClCompile Include="qcustomplot-source\qcustomplot.cpp" />
     <ClCompile Include="RiskManager.cpp" />
     <ClCompile Include="risk_manager\RiskManagerEngine.cpp" />
+    <ClCompile Include="rpc\rfc_frame.cpp" />
     <ClCompile Include="utility.cpp" />
     <QtRcc Include="QCTrader.qrc" />
     <QtUic Include="BacktesterManager.ui" />
@@ -152,6 +153,7 @@
     <QtMoc Include="RiskManager.h" />
     <ClInclude Include="Debug\uic\ui_RiskManager.h" />
     <QtMoc Include="KChartsWidget.h" />
+    <ClInclude Include="rpc\rfc_frame.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="..\include\MongoCxx.h" />
     <ClInclude Include="AlgorithmOrder.h" />

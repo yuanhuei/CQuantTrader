@@ -137,7 +137,7 @@ void BacktesterEngine::StartBacktesting(
 
 	//std::thread tRunBacktest(runBacktesting);
 	std::thread  m_thread;
-	m_thread =std::thread(std::bind(&BacktesterEngine::runBacktesting, this));
+	m_thread = std::thread (std::bind(&BacktesterEngine::runBacktesting, this));
 	//防止主线程退出了,子线程还没退出
 	if(m_thread.joinable())
 		m_thread.detach();
