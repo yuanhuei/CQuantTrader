@@ -17,6 +17,7 @@ class BacktesterEngine;
 class ContractQueryManager;
 class RiskManager;
 class RiskManagerEngine;
+class RpcTestDialog;
 
 #pragma pack(1)
 struct UpdatePriceTableData
@@ -183,6 +184,8 @@ private slots:
 	void menu_CTABacktest();
 	void menu_contractQueryclicked();
 	void menu_riskManagerclicked();
+	void menu_rpcTestclicked();
+		 
 
 	void symbol_ReturnPressed();
 	void SendOrder_clicked();
@@ -207,6 +210,7 @@ public:
 	BacktesterManager* m_ctaBacktesterManager= nullptr;
 	ContractQueryManager* m_ContractQueryManager= nullptr;
 	RiskManager* m_RiskManager = nullptr;
+	RpcTestDialog* m_rpcDialog = nullptr;
 
 
 

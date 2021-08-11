@@ -12,7 +12,7 @@
 #include"cta_backtester/BacktesterEngine.h"
 #include"ContractQueryManager.h"
 #include "RiskManager.h"
-
+#include"RpcTestDialog.h"
 
 
 #include"MongoCxx.h"
@@ -692,6 +692,16 @@ void MainWindow::UpdateLogTable(LogData data)
 			m_ctaBacktesterManager->UpdateLogTable(data);
 
 	}
+	else if (data.gatewayname.find("rpcclient"))
+	{
+		if (m_rpcDialog != nullptr)
+			m_rpcDialog->ui.textEdit_4->insertPlainText(QString::fromStdString(data.msg));
+	}
+	else if (data.gatewayname.find("rpcserver"))
+	{
+		if (m_rpcDialog != nullptr)
+			m_rpcDialog->ui.textEdit->insertPlainText(QString::fromStdString(data.msg));
+	}
 	else//·¢ËÍµ½MainWindow
 	{
 		int rowCount = ui.tableWidget->rowCount();
@@ -747,5 +757,13 @@ void MainWindow::menu_CTABacktest()
 		 m_ctaBacktesterManager = new BacktesterManager(this);
 
 	m_ctaBacktesterManager->show();
+
+}
+
+void MainWindow::menu_rpcTestclicked()
+{
+	if(m_rpcDialog==nullptr)
+		 m_rpcDialog = new RpcTestDialog(this);
+	m_rpcDialog->show();
 
 }

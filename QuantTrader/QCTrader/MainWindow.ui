@@ -514,6 +514,7 @@
     </property>
     <addaction name="action_2"/>
     <addaction name="action"/>
+    <addaction name="actionRPC_Test"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -569,6 +570,11 @@
    </property>
    <property name="text">
     <string>check</string>
+   </property>
+  </action>
+  <action name="actionRPC_Test">
+   <property name="text">
+    <string>RPC Test</string>
    </property>
   </action>
  </widget>
@@ -703,6 +709,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionRPC_Test</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_rpcTestclicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>630</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>menu_ctp_connect()</slot>
@@ -713,5 +735,6 @@
   <slot>menu_CTABacktest()</slot>
   <slot>menu_contractQueryclicked()</slot>
   <slot>menu_riskManagerclicked()</slot>
+  <slot>menu_rpcTestclicked()</slot>
  </slots>
 </ui>
