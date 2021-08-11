@@ -4,6 +4,7 @@
 #include<iostream>
 #include<windows.h>
 #include<stdio.h>
+//#include <unistd.h>
 
 #define KEEP_ALIVE_TOPIC "_keep_alive"
 #define KEEP_ALIVE_INTERVAL 1 //1秒
@@ -20,6 +21,14 @@ RpcServer::RpcServer(RpcTestDialog* pRpctestDialog)
 	m_socket_pub = new zmq::socket_t(m_zmqcontext, zmq::socket_type::pub);
 	m_rpctestDialog = pRpctestDialog;
 
+
+	int nNetTimeout = 5000;//1秒，
+	//设置发送超时
+	m_socket_rep->setsockopt(ZMQ_SNDTIMEO, (char*)&nNetTimeout, sizeof(int));
+	m_socket_rep->setsockopt(ZMQ_RCVTIMEO, (char*)&nNetTimeout, sizeof(int));
+	//设置接收超时
+	m_socket_pub->setsockopt(ZMQ_SNDTIMEO, (char*)&nNetTimeout, sizeof(int));
+	m_socket_pub->setsockopt(ZMQ_RCVTIMEO, (char*)&nNetTimeout, sizeof(int));
 	//msgpack::type::tuple
 
 }
@@ -69,27 +78,35 @@ void RpcServer::run()
 
 		if (delta > KEEP_ALIVE_INTERVAL)
 			publish(KEEP_ALIVE_TOPIC, cur_time.toString().toStdString());
-		zmq_pollitem_t items[1];
+		start_time = QDateTime::currentDateTime();
+		//zmq_pollitem_t items[2];
 		/* First item refers to socket 'socket' */
-		items[0].socket = m_socket_rep;
-		items[0].events = ZMQ_POLLIN;
+		//zmq_fd_t fd=0;
+		//items[0].socket = m_socket_rep;
+		//items[0].events = ZMQ_POLLIN;
+		//items[1].socket = NULL;
+		//items[1].fd = fd;
+		//items[1].events = ZMQ_POLLIN;
 		//Use poll to wait event arrival, waiting time is 1 second(1000 milliseconds)
-		int rc = zmq_poll(items, 1, 1000);
-		if (rc <1)
-			continue;
+		//int rc = zmq_poll(items, 2, 10000);
+		//if (rc <1)
+			//continue;
 		zmq::message_t msg;
-		m_socket_rep->recv(&msg,ZMQ_DONTWAIT);
-		std::string strRec = (char*)msg.data();
-		std::cout << "Received " <<strRec<< std::endl;
-		outputString("Received:"+strRec);
-		//sleep(1);
+		bool bRec=m_socket_rep->recv(&msg);
+		if (bRec)
+		{
+			std::string strRec = (char*)msg.data();
+			std::cout << "Received " << strRec << std::endl;
+			outputString("Received:" + strRec + "\n");
 
-		
-		std::string strReply = "Received:" + strRec;
-		zmq::message_t reply(strReply.size());
-		snprintf((char*)reply.data(), strReply.size(), "%s", (char*)strReply.c_str());
-		//memcpy(reply.data(), "World", 5);
-		m_socket_rep->send(reply,zmq::send_flags::dontwait);
+			std::string strReply = "Received:" + strRec;
+			zmq::message_t reply(strReply.size()+1);
+			snprintf((char*)reply.data(), strReply.size()+1, "%s", (char*)strReply.c_str());
+			//memcpy(reply.data(), "World", 5);
+			m_socket_rep->send(reply, zmq::send_flags::dontwait);
+			continue;
+		}
+		//Sleep(1000);
 	}
 	outputString("RpcServer thread exit\n");
 	char cLastEndPoint[30];
@@ -104,8 +121,8 @@ void RpcServer::publish(std::string strTopic, std::string strData)
 {
 	m_threadMutex.lock();
 	const char* p = strTopic.c_str();
-	zmq::message_t msg(strTopic.size());
-	snprintf((char*)msg.data(), strTopic.size(), "%s", p);
+	zmq::message_t msg(strTopic.size()+1);
+	snprintf((char*)msg.data(), strTopic.size()+1, "%s", p);
 	m_socket_pub->send(msg, zmq::send_flags::dontwait);
 	m_threadMutex.unlock();
 
@@ -125,6 +142,15 @@ RpcClient::RpcClient(RpcTestDialog* pRpctestDialog)
 	m_socket_req = new zmq::socket_t(m_zmqcontext, zmq::socket_type::req);
 	m_socket_sub = new zmq::socket_t(m_zmqcontext, zmq::socket_type::sub);
 	m_rpctestDialog = pRpctestDialog;
+
+	int nNetTimeout = 5000;//1秒，
+	//设置发送超时
+	m_socket_req->setsockopt(ZMQ_SNDTIMEO,(char*) & nNetTimeout, sizeof(int));
+	m_socket_req->setsockopt(ZMQ_RCVTIMEO, (char*)&nNetTimeout, sizeof(int));
+
+	//设置接收超时
+	m_socket_sub->setsockopt(ZMQ_SNDTIMEO,(char*) & nNetTimeout, sizeof(int));
+	m_socket_sub->setsockopt(ZMQ_RCVTIMEO, (char*)&nNetTimeout, sizeof(int));
 
 
 }
@@ -158,32 +184,39 @@ void RpcClient::join()
 void RpcClient::run()
 {
 	int pull_tolerance = KEEP_ALIVE_TOLERANCE * 1000;
-	subscribe_topic("'");
+	subscribe_topic("");
 	outputString("RpcClient running\n");
 	while (m_active)
 	{
 		
-		zmq_pollitem_t items[1];
+		//zmq_pollitem_t items[1];
 		/* First item refers to socket 'socket' */
-		items[0].socket = m_socket_sub;
-		items[0].events = ZMQ_POLLIN;
+		//items[0].socket = m_socket_sub;
+		//items[0].events = ZMQ_POLLIN;
 		//Use poll to wait event arrival, waiting time is 1 second(1000 milliseconds)
-		int rc = zmq_poll(items, 1, pull_tolerance);
-		if (rc < 1)
-		{
-			on_disconnected();
-			continue;
-		}
+		//int rc = zmq_poll(items, 1, pull_tolerance);
+		//if (rc < 1)
+		//{
+		//	on_disconnected();
+		//	continue;
+		//}
 		zmq::message_t msg;
-		//zmq::send_multipart()
-		m_socket_sub->recv(&msg, ZMQ_DONTWAIT);
-		std::string strRec = (char*)msg.data();
-		std::cout << "Received " <<strRec<< std::endl;
-		outputString("sub port received:" + strRec);
+		bool bRec=m_socket_sub->recv(&msg);
+		if (bRec)
+		{
+			std::string strRec = (char*)msg.data();
+			std::cout << "Received " << strRec << std::endl;
+			if(strRec!= KEEP_ALIVE_TOPIC)
+				outputString("sub port received:" + strRec+"\n");
+		}
+		//zmq_poll()
+		Sleep(1000);
 	}
-	outputString("RpcClient thread exit");
-	m_socket_req->close();
-	m_socket_sub->close();
+	outputString("RpcClient thread exit\n");
+	//m_socket_req->close();
+	//m_socket_sub->close();
+	zmq_close(m_socket_req);
+	zmq_close(m_socket_sub);
 
 }
 void RpcClient::callback()
@@ -202,17 +235,24 @@ void RpcClient::on_disconnected()
 std::string RpcClient::sendRequest(std::string strReq)
 {
 
-	zmq::message_t requestMsg(strReq.size());
-	snprintf((char*)requestMsg.data(), strReq.size(), "%s", (char*)strReq.c_str());
+	zmq::message_t requestMsg(strReq.size()+1);
+	snprintf((char*)requestMsg.data(), strReq.size()+1, "%s", (char*)strReq.c_str());
 	//memcpy(request.data(), "World", 5);
-	m_socket_req->send(requestMsg);
+	bool bSend=m_socket_req->send(requestMsg);
 
-	zmq::message_t receiveMsg;
-	m_socket_req->recv(&receiveMsg);
-	std::string strRec = (char*)receiveMsg.data();
-	std::cout << "Received " << strRec << std::endl;
-	outputString("reply port received:" + strRec);
-	return strRec;
+	if (bSend)
+	{
+		zmq::message_t receiveMsg;
+		bool bReq=m_socket_req->recv(&receiveMsg);
+		if (bReq)
+		{
+			std::string strRec = (char*)receiveMsg.data();
+			std::cout << "Received " << strRec << std::endl;
+			outputString("reply port received:" + strRec + "\n");
+			return strRec;
+		}
+	}
+	return "";
 }
 void RpcClient::outputString(std::string strText)
 {

@@ -36,6 +36,7 @@ void RpcTestDialog::rpcserver_stop()
 	m_rpcServer->stop();
 	ui.pushButton->setEnabled(true);
 	ui.pushButton_3->setDisabled(true);
+	m_rpcServer->join();
 
 
 }
@@ -50,6 +51,7 @@ void RpcTestDialog::rpcclient_stop()
 	m_rpcClient->stop();
 	ui.pushButton_2->setEnabled(true);
 	ui.pushButton_4->setDisabled(true);
+	m_rpcClient->join();
 }
 void RpcTestDialog::rpcserver_publish()
 {
