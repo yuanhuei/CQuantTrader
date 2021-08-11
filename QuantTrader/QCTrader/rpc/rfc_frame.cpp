@@ -60,10 +60,12 @@ void RpcServer::join()
 void RpcServer::run()
 {
 	QDateTime start_time = QDateTime::currentDateTime();
+	outputString("RpcServer running\n");
 	while (m_active)
 	{
+		
 		QDateTime cur_time = QDateTime::currentDateTime();
-		int delta = cur_time.secsTo(start_time);
+		int delta = -cur_time.secsTo(start_time);
 
 		if (delta > KEEP_ALIVE_INTERVAL)
 			publish(KEEP_ALIVE_TOPIC, cur_time.toString().toStdString());
@@ -73,27 +75,36 @@ void RpcServer::run()
 		items[0].events = ZMQ_POLLIN;
 		//Use poll to wait event arrival, waiting time is 1 second(1000 milliseconds)
 		int rc = zmq_poll(items, 1, 1000);
-		if (rc == 0)
+		if (rc <1)
 			continue;
 		zmq::message_t msg;
-		m_socket_rep->recv(&msg);
+		m_socket_rep->recv(&msg,ZMQ_DONTWAIT);
 		std::string strRec = (char*)msg.data();
 		std::cout << "Received " <<strRec<< std::endl;
-		outputString(strRec);
+		outputString("Received:"+strRec);
 		//sleep(1);
 
-		zmq::message_t reply;
+		
 		std::string strReply = "Received:" + strRec;
+		zmq::message_t reply(strReply.size());
 		snprintf((char*)reply.data(), strReply.size(), "%s", (char*)strReply.c_str());
-		memcpy(reply.data(), "World", 5);
-		m_socket_rep->send(reply);
+		//memcpy(reply.data(), "World", 5);
+		m_socket_rep->send(reply,zmq::send_flags::dontwait);
 	}
+	outputString("RpcServer thread exit\n");
+	char cLastEndPoint[30];
+	size_t tLen = 30;
+	m_socket_rep->getsockopt(ZMQ_LAST_ENDPOINT, cLastEndPoint, &tLen);
+	m_socket_rep->unbind(cLastEndPoint);
+	m_socket_pub->getsockopt(ZMQ_LAST_ENDPOINT, cLastEndPoint, &tLen);
+	m_socket_pub->unbind(cLastEndPoint);
+
 }
 void RpcServer::publish(std::string strTopic, std::string strData)
 {
 	m_threadMutex.lock();
 	const char* p = strTopic.c_str();
-	zmq::message_t msg;
+	zmq::message_t msg(strTopic.size());
 	snprintf((char*)msg.data(), strTopic.size(), "%s", p);
 	m_socket_pub->send(msg, zmq::send_flags::dontwait);
 	m_threadMutex.unlock();
@@ -148,26 +159,29 @@ void RpcClient::run()
 {
 	int pull_tolerance = KEEP_ALIVE_TOLERANCE * 1000;
 	subscribe_topic("'");
+	outputString("RpcClient running\n");
 	while (m_active)
 	{
+		
 		zmq_pollitem_t items[1];
 		/* First item refers to socket 'socket' */
 		items[0].socket = m_socket_sub;
 		items[0].events = ZMQ_POLLIN;
 		//Use poll to wait event arrival, waiting time is 1 second(1000 milliseconds)
 		int rc = zmq_poll(items, 1, pull_tolerance);
-		if (rc == 0)
+		if (rc < 1)
 		{
 			on_disconnected();
 			continue;
 		}
 		zmq::message_t msg;
 		//zmq::send_multipart()
-		m_socket_sub->recv(&msg);
+		m_socket_sub->recv(&msg, ZMQ_DONTWAIT);
 		std::string strRec = (char*)msg.data();
 		std::cout << "Received " <<strRec<< std::endl;
 		outputString("sub port received:" + strRec);
 	}
+	outputString("RpcClient thread exit");
 	m_socket_req->close();
 	m_socket_sub->close();
 
@@ -188,7 +202,7 @@ void RpcClient::on_disconnected()
 std::string RpcClient::sendRequest(std::string strReq)
 {
 
-	zmq::message_t requestMsg;
+	zmq::message_t requestMsg(strReq.size());
 	snprintf((char*)requestMsg.data(), strReq.size(), "%s", (char*)strReq.c_str());
 	//memcpy(request.data(), "World", 5);
 	m_socket_req->send(requestMsg);

@@ -692,12 +692,12 @@ void MainWindow::UpdateLogTable(LogData data)
 			m_ctaBacktesterManager->UpdateLogTable(data);
 
 	}
-	else if (data.gatewayname.find("rpcclient"))
+	else if (data.gatewayname.find("rpcclient") != data.gatewayname.npos)
 	{
 		if (m_rpcDialog != nullptr)
 			m_rpcDialog->ui.textEdit_4->insertPlainText(QString::fromStdString(data.msg));
 	}
-	else if (data.gatewayname.find("rpcserver"))
+	else if (data.gatewayname.find("rpcserver") != data.gatewayname.npos)
 	{
 		if (m_rpcDialog != nullptr)
 			m_rpcDialog->ui.textEdit->insertPlainText(QString::fromStdString(data.msg));

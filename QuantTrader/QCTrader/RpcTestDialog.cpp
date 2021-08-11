@@ -11,6 +11,7 @@ RpcTestDialog::RpcTestDialog(QWidget *parent)
 	setWindowFlags(Qt::CustomizeWindowHint |
 		Qt::WindowMinimizeButtonHint |
 		Qt::WindowMaximizeButtonHint);
+	setWindowFlags(Qt::Window);
 
 	ui.setupUi(this);
 	m_MainWindow = (MainWindow*)parent;
@@ -28,19 +29,27 @@ void RpcTestDialog::rpcserver_start()
 {
 	m_rpcServer->start(RPC_REP_ADDRESS, RPC_PUB_ADDRESS);
 	ui.pushButton->setDisabled(true);
+	ui.pushButton_3->setEnabled(true);
 }
 void RpcTestDialog::rpcserver_stop()
 {
 	m_rpcServer->stop();
+	ui.pushButton->setEnabled(true);
+	ui.pushButton_3->setDisabled(true);
+
 
 }
 void RpcTestDialog::rpcclient_start()
 {
 	m_rpcClient->start(RPC_REP_ADDRESS, RPC_PUB_ADDRESS);
+	ui.pushButton_2->setDisabled(true);
+	ui.pushButton_4->setEnabled(true);
 }
 void RpcTestDialog::rpcclient_stop()
 {
 	m_rpcClient->stop();
+	ui.pushButton_2->setEnabled(true);
+	ui.pushButton_4->setDisabled(true);
 }
 void RpcTestDialog::rpcserver_publish()
 {
