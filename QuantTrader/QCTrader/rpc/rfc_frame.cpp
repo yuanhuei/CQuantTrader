@@ -4,7 +4,10 @@
 #include<iostream>
 #include<windows.h>
 #include<stdio.h>
-//#include <unistd.h>
+#include "network.hpp"
+
+using namespace Message;
+using namespace MsgTool;
 
 #define KEEP_ALIVE_TOPIC "_keep_alive"
 #define KEEP_ALIVE_INTERVAL 1 //1Ãë
@@ -120,10 +123,19 @@ void RpcServer::run()
 void RpcServer::publish(std::string strTopic, std::string strData)
 {
 	m_threadMutex.lock();
+	/*
 	const char* p = strTopic.c_str();
 	zmq::message_t msg(strTopic.size()+1);
 	snprintf((char*)msg.data(), strTopic.size()+1, "%s", p);
 	m_socket_pub->send(msg, zmq::send_flags::dontwait);
+	*/
+	ServerMessage cmessage;
+	cmessage.Information.push_back(strTopic);// "I come form Client.";
+	Msgpack msgpack;
+	bool result = msgpack.Pack<ServerMessage>(cmessage);
+	if (result)
+		result = MsgTool::SendMessage(&msgpack, m_socket_pub, zmq::send_flags::dontwait,false);
+		
 	m_threadMutex.unlock();
 
 }
@@ -199,7 +211,42 @@ void RpcClient::run()
 		//{
 		//	on_disconnected();
 		//	continue;
-		//}
+		//
+		/*
+		zmq::message_t msg;
+		bool bRec = m_socket_sub->recv(&msg);
+		if (bRec)
+		{
+			std::string strRec = (char*)msg.data();
+			std::cout << "Received " << strRec << std::endl;
+			if (strRec != KEEP_ALIVE_TOPIC)
+				outputString("sub port received:" + strRec + "\n");
+		}
+		*/
+		zmq_msg_t* msg = ReceiveMessage(m_socket_sub);
+		if (msg!=NULL)
+		{
+			//zmq_msg_t* msg_t = msg.handle();
+			
+			Msgpack msgpack;
+
+			BaseMessage* bmessage = msgpack.Unpack(*msg);
+			CloseMsg(msg);
+			if (bmessage != NULL && bmessage->Type == 2048)
+			{
+				ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
+				if (smessage != NULL && smessage->Information.size() > 0)
+				{
+					std::cout << smessage->Information[0] << std::endl;
+					if (smessage->Information[0] != KEEP_ALIVE_TOPIC)
+						outputString("sub port received:" + smessage->Information[0] + "\n");
+				}
+				delete smessage;
+				smessage = NULL;
+				bmessage = NULL;
+			}
+		}
+		/*
 		zmq::message_t msg;
 		bool bRec=m_socket_sub->recv(&msg);
 		if (bRec)
@@ -209,8 +256,9 @@ void RpcClient::run()
 			if(strRec!= KEEP_ALIVE_TOPIC)
 				outputString("sub port received:" + strRec+"\n");
 		}
+		*/
 		//zmq_poll()
-		Sleep(1000);
+		//Sleep(1000);
 	}
 	outputString("RpcClient thread exit\n");
 	//m_socket_req->close();

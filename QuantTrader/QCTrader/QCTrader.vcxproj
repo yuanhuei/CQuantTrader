@@ -157,6 +157,7 @@
     <QtMoc Include="KChartsWidget.h" />
     <QtMoc Include="RpcTestDialog.h" />
     <ClInclude Include="Debug\uic\ui_RpcTestDialog.h" />
+    <ClInclude Include="rpc\network.hpp" />
     <ClInclude Include="rpc\rfc_frame.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="..\include\MongoCxx.h" />
