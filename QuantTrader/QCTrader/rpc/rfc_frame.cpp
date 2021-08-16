@@ -133,6 +133,67 @@ void RpcServer::publish(std::string strTopic, std::string strData)
 	cmessage.Information.push_back(strTopic);// "I come form Client.";
 	Msgpack msgpack;
 	bool result = msgpack.Pack<ServerMessage>(cmessage);
+	/*
+	try
+	{
+		zmq_msg_t msg,msg2;
+		int i, j;
+		size_t messageSize = msgpack.GetSbuf().size();
+		bool isRelease = false;
+		if (isRelease)
+		{
+			i = zmq_msg_init_data(&msg, msgpack.GetSbuf().data(), messageSize, Release, &msgpack);
+		}
+		else
+		{
+			i = zmq_msg_init_data(&msg, msgpack.GetSbuf().data(), messageSize, 0, 0);
+		}
+		zmq::message_t reply_message;// new zmq::message_t(&msg);
+		//memcpy(reply_message.data(), zmq_msg_data(&msg), zmq_msg_size(&msg));
+		//msg2 = *reply_message.handle();
+		i = zmq_msg_copy(reply_message.handle(), &msg);
+		int isize=reply_message.size();
+		msg2 = *reply_message.handle();
+		Msgpack msgpack2;
+		BaseMessage* bmessage = msgpack2.Unpack(msg2);
+		if (bmessage != NULL && bmessage->Type == 2048)
+		{
+			ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
+			if (smessage != NULL && smessage->Information.size() > 0)
+			{
+				std::cout << smessage->Information[0] << std::endl;
+			}
+			delete smessage;
+			smessage = NULL;
+			bmessage = NULL;
+		}
+
+		//bmessage->
+		msgpack::object_handle  obj_h = msgpack::unpack(msgpack.GetSbuf().data(), msgpack.GetSbuf().size());
+		msgpack::object obj = obj_h.get();
+
+		Message::BaseMessage bmessage2;
+		obj.convert(bmessage2);
+
+
+
+		Message::BaseMessage* pMessage;
+		switch (bmessage2.Type)
+		{
+			case 1024:
+				pMessage = MsgTool::Convert<Message::ClientMessage>(obj);
+			case 2048:
+				pMessage = MsgTool::Convert<Message::ServerMessage>(obj);
+			default:
+				std::cout << "" << std::endl;
+		}
+		delete pMessage;
+	}
+	catch(...)
+	{
+		std::cout << "wrong" << std::endl;
+	}
+	*/
 	if (result)
 		result = MsgTool::SendMessage(&msgpack, m_socket_pub, zmq::send_flags::dontwait,false);
 		

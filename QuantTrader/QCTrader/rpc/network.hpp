@@ -111,14 +111,29 @@ namespace MsgTool
                 {
                     Release();
                     m_sbuf.write((char*)zmq_msg_data(&msg), size);
-                    size_t offset = 0;
-                    msgpack::zone z;
-                    msgpack::object obj;
+                   // size_t offset = 0;
+                   // msgpack::zone z;
+                   // msgpack::object obj;
 
-                    msgpack::object_handle oh = msgpack::unpack(m_sbuf.data(), m_sbuf.size());   // 反序列化成实例
-                    msgpack::object deserialized = oh.get();
+                    //msgpack::object_handle oh = msgpack::unpack(m_sbuf.data(), m_sbuf.size());   // 反序列化成实例
+                    //msgpack::object deserialized = oh.get();
                     //msgpack::unpack(m_sbuf.data(), m_sbuf.size(), &offset, &z, &obj);
-                    return GetMessage(deserialized);
+
+
+                    msgpack::object_handle  objhand=msgpack::unpack( m_sbuf.data(), m_sbuf.size());
+                    msgpack::object objmsg = objhand.get();
+                    Message::BaseMessage bmessage;
+                    objmsg.convert(bmessage);
+                    switch (bmessage.Type)
+                    {
+                    case 1024:
+                        return Convert<Message::ClientMessage>(objmsg);
+                    case 2048:
+                        return Convert<Message::ServerMessage>(objmsg);
+                    default:
+                        return NULL;
+                    }
+                    //return GetMessage(obj);
                 }
             }
             catch (...)
@@ -292,20 +307,22 @@ namespace MsgTool
             zmq_msg_t msg;
             //zmq_msg_init(&msg);
             int i, j;
+            size_t messageSize = msgpack->GetSbuf().size();
             if (isRelease)
             {
-                 i=zmq_msg_init_data(&msg, msgpack->GetSbuf().data(), msgpack->GetSbuf().size(), Release, msgpack);
+                 i=zmq_msg_init_data(&msg, msgpack->GetSbuf().data(), messageSize, Release, msgpack);              
             }
             else
             {
-                 i=zmq_msg_init_data(&msg, msgpack->GetSbuf().data(), msgpack->GetSbuf().size(), 0, 0);
+                 i=zmq_msg_init_data(&msg, msgpack->GetSbuf().data(), messageSize, 0, 0);
             }
-             //j=zmq_msg_send(&msg, socket_t, int(flags));
-             
-            zmq::message_t msg_t(msgpack->GetSbuf().size());
-            memcpy(msg_t.data(), &msg, msgpack->GetSbuf().size());
-           //socket_t->send(msg_t,flags);
-            size_t tSize=socket_t->send((void*)&msg, msgpack->GetSbuf().size(),(int) flags);
+            //j=zmq_msg_send(&msg, socket_t, int(flags));
+            size_t tsize = zmq_msg_size(&msg);
+            zmq::message_t msg_t;
+            i = zmq_msg_copy(msg_t.handle(),&msg);
+            //memcpy(msg_t.data(), &msg, zmq_msg_size(&msg));
+            //size_t bSize=socket_t->send(&msg,tsize,(int) flags);
+            bool b = socket_t->send(msg_t, (int)flags);
             return true;
         }
         catch (...)
@@ -325,10 +342,11 @@ namespace MsgTool
         {
             reply = new zmq_msg_t();
             zmq_msg_init(reply);
-            //zmq_msg_recv(reply, socket_t, int(flags));
+            //size_t size=zmq_msg_recv(reply, socket_t, int(flags));
             zmq::message_t reply_message;
-           socket_t->recv(&reply_message,int(flags));
-           *reply = *reply_message.handle();
+            socket_t->recv(&reply_message,  int(flags));
+            int i=zmq_msg_copy(reply, reply_message.handle());
+          // *reply = *reply_message.handle();
             return reply;
         }
         catch (...)
@@ -356,6 +374,15 @@ namespace MsgTool
             msg = NULL;
         }
     }
-
+    // 功能 ：将压包后的数据转换为具体的类。
+// 参数 ：用于转换的msgpack::object。
+// 返回 ：指向T的指针。
+    template<typename T>
+    T* Convert(const msgpack::object& obj)
+    {
+        T* t = new T();
+        obj.convert(*t);
+        return t;
+    }
 };
 #endif
