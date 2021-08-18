@@ -136,6 +136,12 @@
     <ClCompile Include="rpc\network.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RpcConnectDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RpcServiceDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="event_engine\eventengine.h">
@@ -260,6 +266,12 @@
     <QtMoc Include="RpcTestDialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="RpcConnectDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="RpcServiceDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="CTPConnectWidgets.ui">
@@ -284,6 +296,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="RpcTestDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="RpcConnectDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="RpcServiceDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

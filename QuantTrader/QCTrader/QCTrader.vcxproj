@@ -116,6 +116,8 @@
     <ClCompile Include="qcustomplot-source\qcustomplot.cpp" />
     <ClCompile Include="RiskManager.cpp" />
     <ClCompile Include="risk_manager\RiskManagerEngine.cpp" />
+    <ClCompile Include="RpcConnectDialog.cpp" />
+    <ClCompile Include="RpcServiceDialog.cpp" />
     <ClCompile Include="RpcTestDialog.cpp" />
     <ClCompile Include="rpc\network.cpp" />
     <ClCompile Include="rpc\rfc_frame.cpp" />
@@ -138,6 +140,8 @@
     <ClCompile Include="QCTrader.cpp" />
     <ClCompile Include="main.cpp" />
     <QtUic Include="RiskManager.ui" />
+    <QtUic Include="RpcConnectDialog.ui" />
+    <QtUic Include="RpcServiceDialog.ui" />
     <QtUic Include="RpcTestDialog.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +164,8 @@
     <QtMoc Include="KChartsWidget.h" />
     <QtMoc Include="RpcTestDialog.h" />
     <ClInclude Include="Debug\uic\ui_RpcTestDialog.h" />
+    <QtMoc Include="RpcConnectDialog.h" />
+    <QtMoc Include="RpcServiceDialog.h" />
     <ClInclude Include="rpc\network.h" />
     <ClInclude Include="rpc\rfc_frame.h" />
     <ClInclude Include="rpc\RpcEngine.h" />

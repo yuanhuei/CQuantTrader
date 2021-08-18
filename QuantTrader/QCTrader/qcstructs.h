@@ -7,6 +7,7 @@
 #include<mutex>
 #include<map>
 #include"utils.hpp"
+#include<msgpack.hpp>
 /*************************************/
 #define PRICETYPE_LIMITPRICE "pricetypelimit"
 #define PRICETYPE_MARKETPRICE "pricetypemarket"
@@ -70,6 +71,8 @@ struct SubscribeReq
 	std::string expiry;
 	double strikePrice;
 	std::string optionType;
+
+	MSGPACK_DEFINE(symbol, exchange, productClass, currency, expiry, strikePrice, optionType);
 };
 
 struct OrderReq
@@ -87,6 +90,8 @@ struct OrderReq
 	double strikePrice;
 	std::string optionType;
 	std::string strateyName;
+
+	MSGPACK_DEFINE(symbol, exchange, price, volume, priceType, direction, offset, productClass, currency, expiry, strikePrice, optionType, strateyName);
 };
 
 struct StopOrderReq
@@ -116,6 +121,9 @@ struct CancelOrderReq
 	std::string orderID;
 	std::string frontID;
 	std::string sessionID;
+
+	MSGPACK_DEFINE(symbol, exchange, orderID, frontID, sessionID);
+
 };
 
 struct Portfolio_Result_Data

@@ -62,6 +62,47 @@ void Global_FUC::savetraderecord(std::string strategyname, std::shared_ptr<Event
         f.close();
     }
 }
+std::map<std::string, std::string> Global_FUC::ReadRpcConfFileJson(std::string fileName,  BaseEngine* ctaEngine)
+{
+    Json::Reader reader;
+    Json::Value root;
+    std::map<std::string, std::string> rpcConfigInfo_map;
+    std::string rpc_mode, serve_client, req_address, pub_address;
+
+    //从文件中读取，保证当前文件有demo.json文件  
+    std::ifstream in(fileName, std::ios::binary);
+
+    if (!in.is_open())
+    {
+        ctaEngine->writeCtaLog("打开rpc配置文件失败");
+        return rpcConfigInfo_map;
+    }
+
+    if (reader.parse(in, root))
+    {
+        ctaEngine->writeCtaLog("打开rpc配置文件成功");
+        for (int i = 0; i < root.size(); i++)
+        {
+            //读取rpc配置信息
+
+            rpcConfigInfo_map["rpc_mode"] = root[i]["rpc_mode"].asString();
+            rpcConfigInfo_map["serve_client"] = root[i]["serve_client"].asString();
+            rpcConfigInfo_map["req_address"] = root[i]["req_address"].asString();
+            rpcConfigInfo_map["pub_address"] = root[i]["pub_address"].asString();
+
+        }
+    }
+    else
+    {
+        ctaEngine->writeCtaLog("解析rpc配置文件失败");
+    }
+
+    in.close();
+    ctaEngine->writeCtaLog("rpc配置加载完成");
+    return  rpcConfigInfo_map;
+
+
+}
 
 std::map<std::string, std::map<std::string, float>> Global_FUC::ReadStrategyConfFileJson(std::string fileName, BaseEngine* ctaEngine)
 {

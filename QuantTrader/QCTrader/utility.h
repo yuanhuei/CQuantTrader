@@ -15,6 +15,8 @@ class EventEngine;
     {
         int  round_double(double number);
         std::map<std::string, std::map<std::string, float>> ReadStrategyConfFileJson(std::string fileName, BaseEngine* ctaEngine);
+        std::map<std::string, std::string> ReadRpcConfFileJson(std::string fileName, BaseEngine* ctaEngine);
+
         void WriteStrategyDataJson(std::map<std::string, std::string>dataMap, std::string fileName);
         void savetraderecord(std::string strategyname, std::shared_ptr<Event_Trade>etrade, EventEngine* eventEngine);
         std::string time_t2str(time_t datetime);

@@ -13,7 +13,10 @@
 #include"ContractQueryManager.h"
 #include "RiskManager.h"
 #include"RpcTestDialog.h"
-
+#include"RpcServiceDialog.h"
+#include"RpcConnectDialog.h"
+#include"rpc/RpcEngine.h"
+#include"rpc/RpcGateway.h"
 
 #include"MongoCxx.h"
 #include"../include/libmongoc-1.0/mongoc.h"
@@ -24,7 +27,7 @@ mongoc_uri_t* g_uri;
 mongoc_client_pool_t* g_pool;
 //初始化MONGODB
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget* parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -36,7 +39,35 @@ MainWindow::MainWindow(QWidget *parent)
 
 	setUI();
 	LoadEngine();
-	
+
+	std::map<std::string, std::string> rpcConfMap;
+
+	rpcConfMap = Global_FUC::ReadRpcConfFileJson("./conf/rpc_setting.json", m_ctaEngine);// . / Strategy / cta_strategy_setting.json
+	if(rpcConfMap["rpc_mode"] == "yes")//启动RPC服务模式
+	{
+		if (rpcConfMap["serve_client"] == "serve")
+		{
+			ui.actionRPC_Service->setVisible(true);
+			ui.action_RPC_connect->setVisible(false);
+
+			m_rpcEngine = new RpcEngine(this);
+		}
+		else if (rpcConfMap["serve_client"] == "client")
+		{
+			ui.actionRPC_Service->setVisible(false);
+			ui.action_RPC_connect->setVisible(true);
+
+			m_rpcGateway = new RpcGateway(m_eventengine,"rpc");
+		}
+	}
+	else
+	{
+		ui.actionRPC_Service->setVisible(false);
+		ui.action_RPC_connect->setVisible(false);
+
+
+	}
+
 }
 
 MainWindow::~MainWindow()
@@ -765,5 +796,19 @@ void MainWindow::menu_rpcTestclicked()
 	if(m_rpcDialog==nullptr)
 		 m_rpcDialog = new RpcTestDialog(this);
 	m_rpcDialog->show();
+
+}
+
+void MainWindow::menu_rpc_connect()
+{
+	if (m_rpcConnectDialog == nullptr)
+		m_rpcConnectDialog = new RpcConnectDialog(this);
+	m_rpcConnectDialog->show();
+}
+void MainWindow::menu_rpc_service()
+{
+	if (m_rpcServiceDialog == nullptr)
+		m_rpcServiceDialog = new RpcServiceDialog(this);
+	m_rpcServiceDialog->show();
 
 }

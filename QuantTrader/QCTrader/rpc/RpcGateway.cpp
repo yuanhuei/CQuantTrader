@@ -79,3 +79,22 @@ void RpcGateway::client_callback(std::string topic, Event event)
 	//eventEngine->Put(e);
 	m_eventengine->Put(e);
 }
+void RpcGateway::qryAccount()//查询账户资金
+{
+}
+	
+void RpcGateway::qryPosition()//查询持仓
+{
+}
+std::string RpcGateway::GetExchangeName(std::string strSymbol)
+{
+	return "";
+}
+int  RpcGateway::GetSymbolSize(std::string strSymbol)
+{
+	return 0;
+}
+void RpcGateway::connect()//连接
+{}
+
+

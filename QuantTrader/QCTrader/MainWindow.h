@@ -18,6 +18,10 @@ class ContractQueryManager;
 class RiskManager;
 class RiskManagerEngine;
 class RpcTestDialog;
+class RpcConnectDialog;
+class RpcServiceDialog;
+class RpcEngine;
+class RpcGateway;
 
 #pragma pack(1)
 struct UpdatePriceTableData
@@ -185,6 +189,8 @@ private slots:
 	void menu_contractQueryclicked();
 	void menu_riskManagerclicked();
 	void menu_rpcTestclicked();
+	void menu_rpc_connect();
+	void menu_rpc_service();
 		 
 
 	void symbol_ReturnPressed();
@@ -211,7 +217,11 @@ public:
 	ContractQueryManager* m_ContractQueryManager= nullptr;
 	RiskManager* m_RiskManager = nullptr;
 	RpcTestDialog* m_rpcDialog = nullptr;
+	RpcConnectDialog* m_rpcConnectDialog = nullptr;
+	RpcServiceDialog* m_rpcServiceDialog = nullptr;
 
+	RpcEngine* m_rpcEngine;
+	RpcGateway* m_rpcGateway;
 
 
     //model
