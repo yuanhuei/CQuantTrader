@@ -127,6 +127,15 @@
     <ClCompile Include="RpcTestDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rpc\RpcGateway.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpc\RpcEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpc\network.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="event_engine\eventengine.h">
@@ -213,7 +222,13 @@
     <ClInclude Include="Debug\uic\ui_RpcTestDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rpc\network.hpp">
+    <ClInclude Include="rpc\RpcGateway.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpc\RpcEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpc\network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

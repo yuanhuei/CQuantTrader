@@ -9,6 +9,8 @@
 #include<thread>
 #include<mutex>
 #include"RpcTestDialog.h"
+#include"../qcstructs.h"
+#include"network.h"
 
 void generate_certificates(std::string strname);
 
@@ -48,20 +50,24 @@ private:
 	RpcTestDialog* m_rpctestDialog;
 
 };
+class RpcGateway;
+
 class RpcClient
 {
 public:
-	RpcClient(RpcTestDialog* pRpctestDialog);
+	RpcClient(RpcTestDialog* pRpctestDialog=NULL);
+	RpcClient(RpcGateway *pRpcGateaway = NULL);
 	~RpcClient();
 
 	void start(std::string req_address, std::string sub_address);// std::string rep_address, std::string pub_address, std::string str_username, std::string str_password, std::string server_secretkey_path);
 	void stop();
 	void join();
 	void run();
-	void callback();
+	void callback(std::string topic, Event event);
 	void subscribe_topic(std::string strTopic);
 	void on_disconnected();
 	std::string sendRequest(std::string strReq);
+	void call_server(std::vector<NetworkTool::ClientMessage> v_para);
 
 
 
@@ -84,6 +90,7 @@ private:
 	std::mutex m_threadMutex;
 
 	RpcTestDialog* m_rpctestDialog;
+	RpcGateway* m_RpcGateway;
 
 };
 #endif // !RFC_FRAME_H

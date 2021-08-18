@@ -4,10 +4,10 @@
 #include<iostream>
 #include<windows.h>
 #include<stdio.h>
-#include "network.hpp"
-
-using namespace Message;
-using namespace MsgTool;
+#include "network.h"
+#include"../gateway/ctp_gateway/ctpgateway.h"
+#include"RpcGateway.h"
+using namespace NetworkTool;
 
 #define KEEP_ALIVE_TOPIC "_keep_alive"
 #define KEEP_ALIVE_INTERVAL 1 //1Ãë
@@ -140,6 +140,7 @@ void RpcServer::publish(std::string strTopic, std::string strData)
 		int i, j;
 		size_t messageSize = msgpack.GetSbuf().size();
 		bool isRelease = false;
+		Msgpack msgpack2;
 		if (isRelease)
 		{
 			i = zmq_msg_init_data(&msg, msgpack.GetSbuf().data(), messageSize, Release, &msgpack);
@@ -148,13 +149,18 @@ void RpcServer::publish(std::string strTopic, std::string strData)
 		{
 			i = zmq_msg_init_data(&msg, msgpack.GetSbuf().data(), messageSize, 0, 0);
 		}
-		zmq::message_t reply_message;// new zmq::message_t(&msg);
-		//memcpy(reply_message.data(), zmq_msg_data(&msg), zmq_msg_size(&msg));
+		zmq::message_t reply_message,message_send(messageSize);// new zmq::message_t(&msg);
+
+		memcpy(message_send.data(), msgpack.GetSbuf().data(), messageSize);
+		reply_message.copy(message_send);
+		//msgpack2.GetSbuf().write((char*)reply_message.data(), messageSize);
+
+
 		//msg2 = *reply_message.handle();
-		i = zmq_msg_copy(reply_message.handle(), &msg);
+		//i = zmq_msg_copy(reply_message.handle(), &msg);
 		int isize=reply_message.size();
 		msg2 = *reply_message.handle();
-		Msgpack msgpack2;
+		
 		BaseMessage* bmessage = msgpack2.Unpack(msg2);
 		if (bmessage != NULL && bmessage->Type == 2048)
 		{
@@ -168,26 +174,6 @@ void RpcServer::publish(std::string strTopic, std::string strData)
 			bmessage = NULL;
 		}
 
-		//bmessage->
-		msgpack::object_handle  obj_h = msgpack::unpack(msgpack.GetSbuf().data(), msgpack.GetSbuf().size());
-		msgpack::object obj = obj_h.get();
-
-		Message::BaseMessage bmessage2;
-		obj.convert(bmessage2);
-
-
-
-		Message::BaseMessage* pMessage;
-		switch (bmessage2.Type)
-		{
-			case 1024:
-				pMessage = MsgTool::Convert<Message::ClientMessage>(obj);
-			case 2048:
-				pMessage = MsgTool::Convert<Message::ServerMessage>(obj);
-			default:
-				std::cout << "" << std::endl;
-		}
-		delete pMessage;
 	}
 	catch(...)
 	{
@@ -195,7 +181,7 @@ void RpcServer::publish(std::string strTopic, std::string strData)
 	}
 	*/
 	if (result)
-		result = MsgTool::SendMessage(&msgpack, m_socket_pub, zmq::send_flags::dontwait,false);
+		result = SendMsg(&msgpack, m_socket_pub, zmq::send_flags::dontwait,false);
 		
 	m_threadMutex.unlock();
 
@@ -227,7 +213,11 @@ RpcClient::RpcClient(RpcTestDialog* pRpctestDialog)
 
 
 }
+RpcClient::RpcClient(RpcGateway* pRpcGateaway)
+{
+	m_RpcGateway = pRpcGateaway;
 
+}
 RpcClient::~RpcClient()
 {
 	delete m_socket_req;
@@ -299,8 +289,8 @@ void RpcClient::run()
 				if (smessage != NULL && smessage->Information.size() > 0)
 				{
 					std::cout << smessage->Information[0] << std::endl;
-					if (smessage->Information[0] != KEEP_ALIVE_TOPIC)
-						outputString("sub port received:" + smessage->Information[0] + "\n");
+					//if (smessage->Information[0] != KEEP_ALIVE_TOPIC)
+					outputString("sub port received:" + smessage->Information[0] + "\n");
 				}
 				delete smessage;
 				smessage = NULL;
@@ -328,9 +318,9 @@ void RpcClient::run()
 	zmq_close(m_socket_sub);
 
 }
-void RpcClient::callback()
+void RpcClient::callback(std::string topic, Event event)
 {
-
+	m_RpcGateway->client_callback(topic,event);
 }
 void RpcClient::subscribe_topic(std::string strTopic)
 {
@@ -366,4 +356,13 @@ std::string RpcClient::sendRequest(std::string strReq)
 void RpcClient::outputString(std::string strText)
 {
 	m_rpctestDialog->write_log(strText, "rpcclient");
+}
+void RpcClient::call_server(std::vector<ClientMessage> v_para)
+{
+
+	Msgpack msgpack;
+	bool result = msgpack.Pack<std::vector<ClientMessage>>(v_para);
+
+	if (result)
+		result = SendMsg(&msgpack, m_socket_req, zmq::send_flags::dontwait, false);
 }

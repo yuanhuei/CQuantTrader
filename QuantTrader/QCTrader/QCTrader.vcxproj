@@ -117,7 +117,10 @@
     <ClCompile Include="RiskManager.cpp" />
     <ClCompile Include="risk_manager\RiskManagerEngine.cpp" />
     <ClCompile Include="RpcTestDialog.cpp" />
+    <ClCompile Include="rpc\network.cpp" />
     <ClCompile Include="rpc\rfc_frame.cpp" />
+    <ClCompile Include="rpc\RpcEngine.cpp" />
+    <ClCompile Include="rpc\RpcGateway.cpp" />
     <ClCompile Include="utility.cpp" />
     <QtRcc Include="QCTrader.qrc" />
     <QtUic Include="BacktesterManager.ui" />
@@ -157,8 +160,10 @@
     <QtMoc Include="KChartsWidget.h" />
     <QtMoc Include="RpcTestDialog.h" />
     <ClInclude Include="Debug\uic\ui_RpcTestDialog.h" />
-    <ClInclude Include="rpc\network.hpp" />
+    <ClInclude Include="rpc\network.h" />
     <ClInclude Include="rpc\rfc_frame.h" />
+    <ClInclude Include="rpc\RpcEngine.h" />
+    <ClInclude Include="rpc\RpcGateway.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="..\include\MongoCxx.h" />
     <ClInclude Include="AlgorithmOrder.h" />
