@@ -80,7 +80,7 @@ void RpcServer::run()
 		int delta = -cur_time.secsTo(start_time);
 
 		if (delta > KEEP_ALIVE_INTERVAL)
-			publish(KEEP_ALIVE_TOPIC, cur_time.toString().toStdString());
+			publish(KEEP_ALIVE_TOPIC);
 		start_time = QDateTime::currentDateTime();
 		//zmq_pollitem_t items[2];
 		/* First item refers to socket 'socket' */
@@ -120,7 +120,7 @@ void RpcServer::run()
 	m_socket_pub->unbind(cLastEndPoint);
 
 }
-void RpcServer::publish(std::string strTopic, std::string strData)
+void RpcServer::publish(std::string strTopic, ServerMessage cmessage)
 {
 	m_threadMutex.lock();
 	/*
@@ -129,57 +129,17 @@ void RpcServer::publish(std::string strTopic, std::string strData)
 	snprintf((char*)msg.data(), strTopic.size()+1, "%s", p);
 	m_socket_pub->send(msg, zmq::send_flags::dontwait);
 	*/
-	ServerMessage cmessage;
-	cmessage.Information.push_back(strTopic);// "I come form Client.";
+
+	// "I come form Client.";
+	//cmessage.m_event.m_eventtype = EVENT_CTABACKTESTERFINISHED;
+	//cmessage.str_EventType = EVENT_CTABACKTESTERFINISHED;
+	//cmessage.func_name = "func";
+	//cmessage.func_para_orderReq.price = 1;
+
+
+	cmessage.Information.push_back(strTopic);
 	Msgpack msgpack;
 	bool result = msgpack.Pack<ServerMessage>(cmessage);
-	/*
-	try
-	{
-		zmq_msg_t msg,msg2;
-		int i, j;
-		size_t messageSize = msgpack.GetSbuf().size();
-		bool isRelease = false;
-		Msgpack msgpack2;
-		if (isRelease)
-		{
-			i = zmq_msg_init_data(&msg, msgpack.GetSbuf().data(), messageSize, Release, &msgpack);
-		}
-		else
-		{
-			i = zmq_msg_init_data(&msg, msgpack.GetSbuf().data(), messageSize, 0, 0);
-		}
-		zmq::message_t reply_message,message_send(messageSize);// new zmq::message_t(&msg);
-
-		memcpy(message_send.data(), msgpack.GetSbuf().data(), messageSize);
-		reply_message.copy(message_send);
-		//msgpack2.GetSbuf().write((char*)reply_message.data(), messageSize);
-
-
-		//msg2 = *reply_message.handle();
-		//i = zmq_msg_copy(reply_message.handle(), &msg);
-		int isize=reply_message.size();
-		msg2 = *reply_message.handle();
-		
-		BaseMessage* bmessage = msgpack2.Unpack(msg2);
-		if (bmessage != NULL && bmessage->Type == 2048)
-		{
-			ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
-			if (smessage != NULL && smessage->Information.size() > 0)
-			{
-				std::cout << smessage->Information[0] << std::endl;
-			}
-			delete smessage;
-			smessage = NULL;
-			bmessage = NULL;
-		}
-
-	}
-	catch(...)
-	{
-		std::cout << "wrong" << std::endl;
-	}
-	*/
 	if (result)
 		result = SendMsg(&msgpack, m_socket_pub, zmq::send_flags::dontwait,false);
 		
@@ -283,18 +243,29 @@ void RpcClient::run()
 
 			BaseMessage* bmessage = msgpack.Unpack(*msg);
 			CloseMsg(msg);
-			if (bmessage != NULL && bmessage->Type == 2048)
+			if (bmessage != NULL && bmessage->Type == 1024)
 			{
-				ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
-				if (smessage != NULL && smessage->Information.size() > 0)
+				ClientMessage* smessage = static_cast<ClientMessage*>(bmessage);
+				if (smessage != NULL )
 				{
-					std::cout << smessage->Information[0] << std::endl;
-					//if (smessage->Information[0] != KEEP_ALIVE_TOPIC)
-					outputString("sub port received:" + smessage->Information[0] + "\n");
+					outputString("sub port received:" + smessage->Information + "\n");
 				}
 				delete smessage;
 				smessage = NULL;
 				bmessage = NULL;
+			}
+			else if (bmessage != NULL && bmessage->Type == 2048)
+			{
+				ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
+				if (smessage != NULL)
+				{
+					outputString("sub port received:" + smessage->Information[0] + "\n");
+					m_RpcGateway->client_callback("", *smessage);
+				}
+				delete smessage;
+				smessage = NULL;
+				bmessage = NULL;
+
 			}
 		}
 		/*
@@ -318,9 +289,9 @@ void RpcClient::run()
 	zmq_close(m_socket_sub);
 
 }
-void RpcClient::callback(std::string topic, Event event)
+void RpcClient::callback(std::string topic, NetworkTool::ServerMessage sMessage)
 {
-	m_RpcGateway->client_callback(topic,event);
+	m_RpcGateway->client_callback(topic, sMessage);
 }
 void RpcClient::subscribe_topic(std::string strTopic)
 {

@@ -41,7 +41,6 @@ MainWindow::MainWindow(QWidget* parent)
 	LoadEngine();
 
 	std::map<std::string, std::string> rpcConfMap;
-
 	rpcConfMap = Global_FUC::ReadRpcConfFileJson("./conf/rpc_setting.json", m_ctaEngine);// . / Strategy / cta_strategy_setting.json
 	if(rpcConfMap["rpc_mode"] == "yes")//启动RPC服务模式
 	{

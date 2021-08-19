@@ -145,6 +145,7 @@ struct Portfolio_Result_Data
 	double holding_and_totalwinning;	//totalwinning+holdingwinning
 
 	double portfolio_winning;			//所有策略 合约的盈利
+	MSGPACK_DEFINE(holdingprice);
 };
 
 class BaseData  //基类
@@ -407,8 +408,10 @@ public:
 	{
 		return m_eventtype;
 	}
-private:
+public:
 	std::string m_eventtype;
+
+	MSGPACK_DEFINE(m_eventtype);
 };
 class  Event_TesterFinished :public Event
 {
@@ -436,6 +439,8 @@ class   Event_Tick :public Event
 public:
 	Event_Tick(): Event(EVENT_TICK)
 	{}
+	MSGPACK_DEFINE(symbol, exchange, gatewayname, lastprice, volume, openInterest, date, time);
+
 	//代码
 	std::string symbol;
 	std::string exchange;
@@ -486,6 +491,7 @@ class   Event_Trade :public Event
 public:
 	Event_Trade() :Event(EVENT_TRADE)
 	{}
+	MSGPACK_DEFINE(symbol, exchange, tradeID, orderID, gatewayname, direction, offset, price, volume, tradeTime, datetime);
 	//代码编号
 	std::string symbol;
 	std::string exchange;
@@ -506,6 +512,7 @@ class   Event_Order :public Event
 public:
 	Event_Order() :Event(EVENT_ORDER)
 	{}
+	MSGPACK_DEFINE(symbol, exchange,  orderID, gatewayname, direction, offset, price, totalVolume, tradedVolume, orderTime, status, cancelTime, frontID, sessionID);
 	//编号相关
 	std::string symbol;
 	std::string exchange;
@@ -532,6 +539,9 @@ class   Event_StopOrder :public Event
 public:
 	Event_StopOrder() :Event(EVENT_STOP_ORDER)
 	{}
+	MSGPACK_DEFINE(symbol, exchange, orderID, gatewayname, direction, offset, price,
+		totalVolume, tradedVolume, orderTime, status, cancelTime, frontID, sessionID, strategyName);
+
 	//编号相关
 	std::string symbol;
 	std::string exchange;
@@ -559,6 +569,9 @@ class   Event_Contract :public Event
 public:
 	Event_Contract() :Event(EVENT_CONTRACT)
 	{}
+	MSGPACK_DEFINE(symbol, exchange, name, gatewayname, productClass, size, priceTick,
+		strikePrice, underlyingSymbol, optionType);
+
 	std::string symbol;
 	std::string exchange;
 	std::string name;                   //合约中文名
@@ -585,6 +598,9 @@ public:
 		price = 0;
 		frozen = 0;
 	}
+	MSGPACK_DEFINE(symbol, direction, position, gatewayname, todayPosition, ydPosition, todayPositionCost,
+		ydPositionCost, price, frozen);
+
 	std::string symbol;
 	std::string direction;
 	std::string gatewayname;
@@ -602,6 +618,9 @@ class   Event_Account :public Event
 public:
 	Event_Account() :Event(EVENT_ACCOUNT)
 	{}
+	MSGPACK_DEFINE(gatewayname, accountid, preBalance, balance,
+		available, commission, margin, closeProfit, positionProfit);
+
 	std::string gatewayname;
 	std::string accountid;
 	double preBalance;//昨日账户结算净值
@@ -618,6 +637,9 @@ class   Event_Error :public Event
 public:
 	Event_Error() :Event(EVENT_ERROR)
 	{}
+	MSGPACK_DEFINE(errorID, errorMsg, additionalInfo, gatewayname,
+		errorTime);
+
 	std::string errorID;//错误代码
 	std::string errorMsg;//错误信息
 	std::string additionalInfo;//附加信息
@@ -630,6 +652,9 @@ class   Event_Log :public Event
 public:
 	Event_Log() :Event(EVENT_LOG)
 	{}
+	MSGPACK_DEFINE(msg, gatewayname,
+		logTime);
+
 	std::string msg;//log信息
 	std::string gatewayname;
 	std::string logTime = Utils::getCurrentSystemTime();
@@ -640,6 +665,9 @@ class   Event_UpdateStrategy :public Event
 public:
 	Event_UpdateStrategy() :Event(EVENT_UPDATESTRATEGY)
 	{}
+	MSGPACK_DEFINE(strategyname, parammap,
+		varmap);
+
 	std::string strategyname;
 	std::map<std::string, std::string>parammap;
 	std::map<std::string, std::string>varmap;
@@ -650,6 +678,9 @@ class   Event_UpdatePortfolio :public Event
 public:
 	Event_UpdatePortfolio() :Event(EVENT_UPDATEPORTFOLIO)
 	{}
+	MSGPACK_DEFINE(strategyname, symbol,
+		datetime, Portfoliodata, strategyrows);
+
 	std::string strategyname;
 	std::string symbol;
 	time_t datetime;
@@ -662,6 +693,9 @@ class   Event_LoadStrategy :public Event
 public:
 	Event_LoadStrategy() :Event(EVENT_LOADSTRATEGY)
 	{}
+	MSGPACK_DEFINE(strategyname, parammap,
+		varmap);
+
 	std::string strategyname;
 	std::map<std::string, std::string>parammap;
 	std::map<std::string, std::string>varmap;

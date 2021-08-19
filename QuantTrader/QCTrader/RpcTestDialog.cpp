@@ -57,7 +57,7 @@ void RpcTestDialog::rpcserver_publish()
 {
 	QString strInput = ui.textEdit_2->toPlainText();
 	if(strInput.size()>0)
-		m_rpcServer->publish(strInput.toStdString(),"");
+		m_rpcServer->publish(strInput.toStdString());
 }
 void RpcTestDialog::rpcclient_sendreq()
 {

@@ -55,6 +55,7 @@ namespace NetworkTool
     ServerMessage::ServerMessage()
     {
         Type = 2048;
+        //m_event = Event("event");
     }
 
 

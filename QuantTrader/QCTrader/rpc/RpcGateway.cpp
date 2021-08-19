@@ -72,11 +72,34 @@ void RpcGateway::close()
 	m_client->stop();
 	m_client->join();
 }
-void RpcGateway::client_callback(std::string topic, Event event)
+void RpcGateway::client_callback(std::string topic, ServerMessage emessage)
 {
-	std::shared_ptr<Event>e = std::make_shared<Event>(event);
+	ServerMessage cmessage;
+	//Event event();
+	std::shared_ptr<Event>e;// = std::make_shared<Event>(event);
+	if (emessage.str_EventType == EVENT_TICK)
+	{
+		//event = cmessage.event_tick; .
+		e = std::make_shared<Event>(cmessage.event_tick);
+	}
+	else if (emessage.str_EventType == EVENT_TRADE)
+	{
+		e = std::make_shared<Event>(cmessage.event_trade);
+
+	}
+	else if (emessage.str_EventType == EVENT_ORDER)
+	{
+		e = std::make_shared<Event>(cmessage.event_order);
+
+	}
+	else if (emessage.str_EventType == EVENT_LOG)
+	{
+		e = std::make_shared<Event>(cmessage.event_log);
+	}
+
+
+	
 	//e->gatewayname = "CTP";
-	//eventEngine->Put(e);
 	m_eventengine->Put(e);
 }
 void RpcGateway::qryAccount()//查询账户资金

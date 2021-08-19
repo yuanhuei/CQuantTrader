@@ -1,5 +1,6 @@
 #pragma once
 #include"../gateway/qcgateway.hpp"
+#include"network.h"
 class RpcClient;
 
 class RpcGateway :
@@ -14,7 +15,7 @@ class RpcGateway :
         void cancelOrder(CancelOrderReq& req);
         void query_all();
         void close();
-        void client_callback(std::string topic, Event event);
+        void client_callback(std::string topic, NetworkTool::ServerMessage emessage);
 
          void qryAccount();																				//查询账户资金
          void qryPosition();																				//查询持仓

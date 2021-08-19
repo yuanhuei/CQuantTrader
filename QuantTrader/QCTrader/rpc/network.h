@@ -40,11 +40,24 @@ namespace NetworkTool
     {
     public:
 
-        MSGPACK_DEFINE(Type, Information);
+        MSGPACK_DEFINE(Type, Information, str_EventType, event_timer, event_tick, event_trade, event_stoporder, event_contract,
+            event_position, event_account, event_error, event_log);
 
         //信息
         std::vector<std::string> Information;
+        std::string str_EventType;
+        //Event m_event=Event("event");
 
+        Event_Timer event_timer;
+        Event_Tick event_tick;
+        Event_Trade  event_trade;
+        Event_Order  event_order;
+        Event_StopOrder  event_stoporder;
+        Event_Contract  event_contract;
+        Event_Position   event_position;
+        Event_Account event_account;
+        Event_Error   event_error;
+        Event_Log event_log;
         //默认构造函数
         ServerMessage();
     };

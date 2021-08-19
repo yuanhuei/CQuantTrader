@@ -4,6 +4,8 @@
 #include"../MainWindow.h"
 #include"../event_engine/eventengine.h"
 #include<string>
+#include"network.h"
+using namespace NetworkTool;
 
 RpcEngine::RpcEngine(MainWindow *mainwindow)
 {
@@ -25,6 +27,15 @@ RpcEngine::~RpcEngine()
 void RpcEngine::register_event()
 {
    // m_eventengine->RegEvent("",this.process_event);//self.event_engine.register_general(self.process_event)
+    m_eventengine->RegEvent(EVENT_TICK, std::bind(&RpcEngine::process_event, this, std::placeholders::_1));
+    m_eventengine->RegEvent(EVENT_ORDER, std::bind(&RpcEngine::process_event, this, std::placeholders::_1));
+    m_eventengine->RegEvent(EVENT_STOP_ORDER, std::bind(&RpcEngine::process_event, this, std::placeholders::_1));
+
+    m_eventengine->RegEvent(EVENT_TRADE, std::bind(&RpcEngine::process_event, this, std::placeholders::_1));
+    m_eventengine->RegEvent(EVENT_POSITION, std::bind(&RpcEngine::process_event, this, std::placeholders::_1));
+    m_eventengine->RegEvent(EVENT_TIMER, std::bind(&RpcEngine::process_event, this, std::placeholders::_1));
+    //m_eventengine->RegEvent(EVENT_LOG, std::bind(&RpcEngine::v, this, std::placeholders::_1));
+
 }
 
 void RpcEngine::init_server()
@@ -84,8 +95,35 @@ void RpcEngine::close()
 }
 void RpcEngine::process_event(std::shared_ptr<Event>e)
 {
+    ServerMessage cmessage;
+    if (e->GetEventType() == EVENT_TICK)
+    {
+        std::shared_ptr<Event_Tick>pEvent = std::static_pointer_cast<Event_Tick>(e);
+        cmessage.event_tick = *pEvent;
+        cmessage.str_EventType = EVENT_TICK;
+    }
+    else if(e->GetEventType() == EVENT_TRADE)
+    {
+        std::shared_ptr<Event_Trade>pEvent = std::static_pointer_cast<Event_Trade>(e);
+        cmessage.event_trade = *pEvent;
+        cmessage.str_EventType = EVENT_TRADE;
+    }
+    else if (e->GetEventType() == EVENT_ORDER)
+    {
+        std::shared_ptr<Event_Order>pEvent = std::static_pointer_cast<Event_Order>(e);
+        cmessage.event_order = *pEvent;
+        cmessage.str_EventType = EVENT_ORDER;
+    }
+    else if (e->GetEventType() == EVENT_LOG)
+    {
+        std::shared_ptr<Event_Log>pEvent = std::static_pointer_cast<Event_Log>(e);
+        cmessage.event_log = *pEvent;
+        cmessage.str_EventType = EVENT_LOG;
+    }
+
+
     if (m_RpcServer->isActive())
-        m_RpcServer->publish("", "");
+        m_RpcServer->publish("Event", cmessage);
 }
 void RpcEngine::write_log(std::string strLog)
 {

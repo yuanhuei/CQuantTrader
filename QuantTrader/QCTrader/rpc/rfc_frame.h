@@ -25,7 +25,7 @@ public:
 	void stop();
 	void join();
 	void run();
-	void publish(std::string strTopic,std::string strData);
+	void publish(std::string strTopic, NetworkTool::ServerMessage cmessage= NetworkTool::ServerMessage());
 	void fun_register();
 	void outputString(std::string strText);
 
@@ -63,7 +63,7 @@ public:
 	void stop();
 	void join();
 	void run();
-	void callback(std::string topic, Event event);
+	void callback(std::string topic, NetworkTool::ServerMessage sMessage);
 	void subscribe_topic(std::string strTopic);
 	void on_disconnected();
 	std::string sendRequest(std::string strReq);

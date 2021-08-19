@@ -104,5 +104,42 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>RpcServiceDialog</receiver>
+   <slot>rpcService_startButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>367</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>-8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>RpcServiceDialog</receiver>
+   <slot>rpcService_stopButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>406</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>280</x>
+     <y>2</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>rpcService_startButton_clicked()</slot>
+  <slot>rpcService_stopButton_clicked()</slot>
+ </slots>
 </ui>
