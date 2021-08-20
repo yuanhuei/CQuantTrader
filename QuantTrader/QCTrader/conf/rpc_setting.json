@@ -1,0 +1,9 @@
+[
+{
+        "rpc_mode": "yes",
+        "server_client": "server",
+        "req_address": "tcp://*:2014",
+         "pub_address": "tcp://*:4102"
+}
+
+]
