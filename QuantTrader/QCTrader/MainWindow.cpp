@@ -39,32 +39,35 @@ MainWindow::MainWindow(QWidget* parent)
 
 	setUI();
 	LoadEngine();
+	SetRpcMode();
+}
+void MainWindow::SetRpcMode()
+{
 
 	std::map<std::string, std::string> rpcConfMap;
 	rpcConfMap = Global_FUC::ReadRpcConfFileJson("./conf/rpc_setting.json", m_ctaEngine);// . / Strategy / cta_strategy_setting.json
 	if(rpcConfMap["rpc_mode"] == "yes")//启动RPC服务模式
 	{
-		if (rpcConfMap["serve_client"] == "serve")
-		{
-			ui.actionRPC_Service->setVisible(true);
-			ui.action_RPC_connect->setVisible(false);
 
-			m_rpcEngine = new RpcEngine(this);
-		}
-		else if (rpcConfMap["serve_client"] == "client")
+		if (rpcConfMap["server_client"] == "client")
 		{
 			ui.actionRPC_Service->setVisible(false);
 			ui.action_RPC_connect->setVisible(true);
-
+			ui.actionCTP_Connect->setVisible(false);
 			m_rpcGateway = new RpcGateway(m_eventengine,"rpc");
+		}
+		else//server模式
+		{
+			ui.actionRPC_Service->setVisible(true);
+			ui.action_RPC_connect->setVisible(false);
+			m_rpcEngine = new RpcEngine(this);
+
 		}
 	}
 	else
 	{
 		ui.actionRPC_Service->setVisible(false);
 		ui.action_RPC_connect->setVisible(false);
-
-
 	}
 
 }

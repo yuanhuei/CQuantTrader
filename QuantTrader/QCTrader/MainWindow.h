@@ -150,6 +150,8 @@ public:
 	void setUI();
 	void LoadEngine();
 	void RegEvent();
+	void SetRpcMode();
+
 
 	//事件回调函数
 	void OnLogUpdate(std::shared_ptr<Event>e);

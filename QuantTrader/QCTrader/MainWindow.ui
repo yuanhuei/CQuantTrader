@@ -736,6 +736,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_RPC_connect</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_rpc_connect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>630</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRPC_Service</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>menu_rpc_service()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>630</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>menu_ctp_connect()</slot>
@@ -747,5 +779,7 @@
   <slot>menu_contractQueryclicked()</slot>
   <slot>menu_riskManagerclicked()</slot>
   <slot>menu_rpcTestclicked()</slot>
+  <slot>menu_rpc_connect()</slot>
+  <slot>menu_rpc_service()</slot>
  </slots>
 </ui>

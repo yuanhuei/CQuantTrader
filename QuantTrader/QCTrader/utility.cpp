@@ -86,7 +86,7 @@ std::map<std::string, std::string> Global_FUC::ReadRpcConfFileJson(std::string f
             //∂¡»°rpc≈‰÷√–≈œ¢
 
             rpcConfigInfo_map["rpc_mode"] = root[i]["rpc_mode"].asString();
-            rpcConfigInfo_map["serve_client"] = root[i]["serve_client"].asString();
+            rpcConfigInfo_map["server_client"] = root[i]["server_client"].asString();
             rpcConfigInfo_map["req_address"] = root[i]["req_address"].asString();
             rpcConfigInfo_map["pub_address"] = root[i]["pub_address"].asString();
 
