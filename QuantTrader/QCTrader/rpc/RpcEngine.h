@@ -4,12 +4,11 @@
 #include<string>
 #include<memory>
 #include"../qcstructs.h"
-
+#include"rpc/network.h"
 class RpcServer;
 class Gatewaymanager;
 class MainWindow;
 class EventEngine;
-class RpcEngine;
 class MainWindow;
 class RpcEngine
 {
@@ -26,6 +25,7 @@ public:
 	void process_event(std::shared_ptr<Event> e);
 	void write_log(std::string strLog);
 	void register_event();
+	void call_func(std::vector<NetworkTool::ClientMessage>& vMessage, NetworkTool::ServerMessage& returnMessage);
 private:
 	RpcServer* m_RpcServer;
 	std::string rep_address;

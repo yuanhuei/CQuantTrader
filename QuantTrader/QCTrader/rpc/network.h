@@ -41,12 +41,14 @@ namespace NetworkTool
     public:
 
         MSGPACK_DEFINE(Type, Information, str_EventType, event_timer, event_tick, event_trade, event_stoporder, event_contract,
-            event_position, event_account, event_error, event_log);
+            event_position, event_account, event_error, event_log, strReturnType, iReturn,strReturn);
 
         //пео╒
         std::vector<std::string> Information;
         std::string str_EventType;
-        //Event m_event=Event("event");
+        std::string strReturnType;
+        int iReturn;
+        std::string strReturn;
 
         Event_Timer event_timer;
         Event_Tick event_tick;
@@ -85,6 +87,8 @@ namespace NetworkTool
         };
 
         BaseMessage* Unpack(zmq_msg_t& msg);
+        std::vector <ClientMessage>* Unpackvector(zmq_msg_t& msg);
+
         msgpack::sbuffer& GetSbuf();
         void Release();
         template<typename T>

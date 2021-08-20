@@ -9,7 +9,7 @@ using namespace NetworkTool;
 
 RpcEngine::RpcEngine(MainWindow *mainwindow)
 {
-	m_RpcServer = new RpcServer(NULL);
+	m_RpcServer = new RpcServer(this);
     m_mainwindow = mainwindow;
 	m_gatewaymanager = mainwindow->m_gatewaymanager;
     m_eventengine = mainwindow->m_eventengine;
@@ -36,6 +36,24 @@ void RpcEngine::register_event()
     m_eventengine->RegEvent(EVENT_TIMER, std::bind(&RpcEngine::process_event, this, std::placeholders::_1));
     //m_eventengine->RegEvent(EVENT_LOG, std::bind(&RpcEngine::v, this, std::placeholders::_1));
 
+}
+void RpcEngine::call_func(std::vector<ClientMessage>& vMessage, ServerMessage& returnMessage)
+{
+    if (vMessage[0].func_name == "subscribe")
+    {
+        m_gatewaymanager->subscribe(vMessage[1].func_para_subReq, "CTP");
+        returnMessage.strReturnType = "void";
+    }
+    else if (vMessage[0].func_name == "sendOrder")
+    {
+        returnMessage.strReturn=m_gatewaymanager->sendOrder(vMessage[1].func_para_orderReq, "CTP");
+        returnMessage.strReturnType = "string";
+    }
+    else if (vMessage[0].func_name == "cancelOrder")
+    {
+        m_gatewaymanager->cancelOrder(vMessage[1].func_para_cancelReq, "CTP");
+        returnMessage.strReturnType = "void";
+    }
 }
 
 void RpcEngine::init_server()

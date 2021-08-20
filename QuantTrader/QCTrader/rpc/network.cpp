@@ -77,6 +77,32 @@ namespace NetworkTool
         // 功能 ：解包数据。
         // 参数 ：zmq消息体。
         // 返回 ：返回指向基类消息的指针。
+    std::vector <ClientMessage>* Msgpack::Unpackvector(zmq_msg_t& msg)
+    {
+        try
+        {
+            int size = zmq_msg_size(&msg);
+            if (size > 0)
+            {
+                Release();
+                m_sbuf.write((char*)zmq_msg_data(&msg), size);
+
+                std::vector <ClientMessage>* vMessage=new std::vector <ClientMessage>;
+                msgpack::object_handle  objhand = msgpack::unpack(m_sbuf.data(), m_sbuf.size());
+                msgpack::object objmsg = objhand.get();
+                objmsg.convert(*vMessage);
+                return vMessage;
+                //return GetMessage(obj);
+            }
+        }
+        catch (...)
+        {
+            //吃掉异常
+        }
+        return NULL;
+
+    }
+
     BaseMessage* Msgpack::Unpack(zmq_msg_t& msg)
     {
         try

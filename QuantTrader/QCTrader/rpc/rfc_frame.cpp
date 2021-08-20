@@ -7,6 +7,7 @@
 #include "network.h"
 #include"../gateway/ctp_gateway/ctpgateway.h"
 #include"RpcGateway.h"
+#include"rpc/RpcEngine.h"
 using namespace NetworkTool;
 
 #define KEEP_ALIVE_TOPIC "_keep_alive"
@@ -17,7 +18,25 @@ void generate_certificates(std::string strname)
 {
 
 }
+RpcServer::RpcServer(RpcEngine* pRpcEngine)
+{
+	{
+		m_socket_rep = new zmq::socket_t(m_zmqcontext, zmq::socket_type::rep);
+		m_socket_pub = new zmq::socket_t(m_zmqcontext, zmq::socket_type::pub);
+		m_rpcEngine = pRpcEngine;
 
+
+		int nNetTimeout = 5000;//1秒，
+		//设置发送超时
+		m_socket_rep->setsockopt(ZMQ_SNDTIMEO, (char*)&nNetTimeout, sizeof(int));
+		m_socket_rep->setsockopt(ZMQ_RCVTIMEO, (char*)&nNetTimeout, sizeof(int));
+		//设置接收超时
+		m_socket_pub->setsockopt(ZMQ_SNDTIMEO, (char*)&nNetTimeout, sizeof(int));
+		m_socket_pub->setsockopt(ZMQ_RCVTIMEO, (char*)&nNetTimeout, sizeof(int));
+		//msgpack::type::tuple
+
+	}
+};
 RpcServer::RpcServer(RpcTestDialog* pRpctestDialog)
 {
 	m_socket_rep = new zmq::socket_t(m_zmqcontext, zmq::socket_type::rep);
@@ -69,6 +88,11 @@ void RpcServer::join()
 {
 	m_thread.join();
 }
+void call_func(ClientMessage& smessage)
+{
+
+}
+
 void RpcServer::run()
 {
 	QDateTime start_time = QDateTime::currentDateTime();
@@ -94,6 +118,38 @@ void RpcServer::run()
 		//int rc = zmq_poll(items, 2, 10000);
 		//if (rc <1)
 			//continue;
+
+		zmq_msg_t* msg = ReceiveMessage(m_socket_rep);
+		if (msg != NULL)
+		{
+			//zmq_msg_t* msg_t = msg.handle();
+
+			Msgpack msgpack;
+			std::vector<NetworkTool::ClientMessage>* vmessage;
+			vmessage = msgpack.Unpackvector(*msg);
+			CloseMsg(msg);
+			if (vmessage != NULL )
+			{
+				if ((*vmessage).size()> 0)
+				{
+					//outputString("sub port received:" + smessage->Information + "\n");
+					//call_func(smessage);
+					
+					ServerMessage returnMessage= ServerMessage();
+					m_rpcEngine->call_func(*vmessage, returnMessage);//调用注册的函数
+
+					Msgpack msgpack;
+					bool result = msgpack.Pack<ServerMessage>(returnMessage);
+					if (result)
+						result = SendMsg(&msgpack, m_socket_rep, zmq::send_flags::dontwait, false);//发送函数执行的返回值
+
+				}
+				delete vmessage;
+				vmessage = NULL;
+
+			}
+		}
+		/*
 		zmq::message_t msg;
 		bool bRec=m_socket_rep->recv(&msg);
 		if (bRec)
@@ -110,6 +166,7 @@ void RpcServer::run()
 			continue;
 		}
 		//Sleep(1000);
+		*/
 	}
 	outputString("RpcServer thread exit\n");
 	char cLastEndPoint[30];
@@ -136,7 +193,7 @@ void RpcServer::publish(std::string strTopic, ServerMessage cmessage)
 	//cmessage.func_name = "func";
 	//cmessage.func_para_orderReq.price = 1;
 
-
+	//发送心跳报文以及广播注册的事件
 	cmessage.Information.push_back(strTopic);
 	Msgpack msgpack;
 	bool result = msgpack.Pack<ServerMessage>(cmessage);
@@ -243,24 +300,14 @@ void RpcClient::run()
 
 			BaseMessage* bmessage = msgpack.Unpack(*msg);
 			CloseMsg(msg);
-			if (bmessage != NULL && bmessage->Type == 1024)
-			{
-				ClientMessage* smessage = static_cast<ClientMessage*>(bmessage);
-				if (smessage != NULL )
-				{
-					outputString("sub port received:" + smessage->Information + "\n");
-				}
-				delete smessage;
-				smessage = NULL;
-				bmessage = NULL;
-			}
-			else if (bmessage != NULL && bmessage->Type == 2048)
+			if (bmessage != NULL && bmessage->Type == 2048)
 			{
 				ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
 				if (smessage != NULL)
 				{
 					outputString("sub port received:" + smessage->Information[0] + "\n");
-					m_RpcGateway->client_callback("", *smessage);
+					if(smessage->Information[0]!= KEEP_ALIVE_TOPIC)
+						callback("callback", *smessage);
 				}
 				delete smessage;
 				smessage = NULL;
@@ -291,7 +338,7 @@ void RpcClient::run()
 }
 void RpcClient::callback(std::string topic, NetworkTool::ServerMessage sMessage)
 {
-	m_RpcGateway->client_callback(topic, sMessage);
+	m_RpcGateway->client_callback(topic, sMessage);//执行注册的回调函数，这里用来转发收到的event事件到eventengine中
 }
 void RpcClient::subscribe_topic(std::string strTopic)
 {
@@ -326,14 +373,40 @@ std::string RpcClient::sendRequest(std::string strReq)
 }
 void RpcClient::outputString(std::string strText)
 {
-	m_rpctestDialog->write_log(strText, "rpcclient");
+	if(m_rpctestDialog!=nullptr)
+		m_rpctestDialog->write_log(strText, "rpcclient");
 }
-void RpcClient::call_server(std::vector<ClientMessage> v_para)
+void RpcClient::call_server(std::vector<ClientMessage> v_para,ServerMessage& returnMessage)
 {
 
 	Msgpack msgpack;
 	bool result = msgpack.Pack<std::vector<ClientMessage>>(v_para);
 
 	if (result)
+	{
+		m_threadMutex.lock();
 		result = SendMsg(&msgpack, m_socket_req, zmq::send_flags::dontwait, false);
+
+		zmq_msg_t* msg = ReceiveMessage(m_socket_req);
+		if (msg != NULL)
+		{
+			Msgpack msgpack;
+
+			BaseMessage* bmessage = msgpack.Unpack(*msg);
+			CloseMsg(msg);
+			if (bmessage != NULL && bmessage->Type == 2048)
+			{
+				ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
+				if (smessage != NULL)
+				{
+					outputString("sub port received:" + smessage->Information[0] + "\n");
+					returnMessage = *smessage;//返回值
+				}
+				delete smessage;
+				smessage = NULL;
+				bmessage = NULL;
+			}
+		}
+		m_threadMutex.unlock();
+	}
 }

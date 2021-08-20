@@ -11,6 +11,7 @@
 #include"RpcTestDialog.h"
 #include"../qcstructs.h"
 #include"network.h"
+class RpcEngine;
 
 void generate_certificates(std::string strname);
 
@@ -18,6 +19,8 @@ class RpcServer
 {
 public:
 	RpcServer(RpcTestDialog * pRpctestDialog);
+	RpcServer(RpcEngine* pRpcEngine);
+
 	~RpcServer();
 
 	bool isActive();
@@ -28,6 +31,7 @@ public:
 	void publish(std::string strTopic, NetworkTool::ServerMessage cmessage= NetworkTool::ServerMessage());
 	void fun_register();
 	void outputString(std::string strText);
+	void call_func(NetworkTool::ClientMessage& smessage, NetworkTool::ServerMessage& returnMessage);
 
 
 private:
@@ -48,6 +52,7 @@ private:
 	std::thread  m_thread; // m_thread: threading.Thread = None          # RpcServer thread
 	std::mutex m_threadMutex;
 	RpcTestDialog* m_rpctestDialog;
+	RpcEngine* m_rpcEngine;
 
 };
 class RpcGateway;
@@ -67,7 +72,7 @@ public:
 	void subscribe_topic(std::string strTopic);
 	void on_disconnected();
 	std::string sendRequest(std::string strReq);
-	void call_server(std::vector<NetworkTool::ClientMessage> v_para);
+	void call_server(std::vector<NetworkTool::ClientMessage> v_para, NetworkTool::ServerMessage& returnMessage);
 
 
 
