@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 	setUI();
 	LoadEngine();
-	SetRpcMode();
+	SetRpcMode();//…Ë÷√RPC
 }
 void MainWindow::SetRpcMode()
 {
