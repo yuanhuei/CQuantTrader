@@ -1,6 +1,7 @@
 #include "RpcTestDialog.h"
 #include"MainWindow.h"
 #include"rpc/rfc_frame.h"
+#include"rpc/network.h"
 
 #define RPC_REP_ADDRESS "tcp://127.0.0.1:2014"
 #define RPC_PUB_ADDRESS "tcp://127.0.0.1:4102"
@@ -61,9 +62,37 @@ void RpcTestDialog::rpcserver_publish()
 }
 void RpcTestDialog::rpcclient_sendreq()
 {
+	/*
 	QString strInput = ui.textEdit_3->toPlainText();
 	if (strInput.size() > 0)
 		m_rpcClient->sendRequest(strInput.toStdString());
+    */
+	//using namespace NetworkTool;
+	NetworkTool::ServerMessage returnMessage;
+	std::tuple<int, int> inputPara(10,10);
+	NetworkTool::MethodCallMessage<std::tuple<int, int>> callMethod("caculate_x_y",inputPara);
+	//int i = 10;
+	//NetworkTool::MethodCallMessage<int> callMethod("caculate_x_y",i);
+
+	m_rpcClient->call_server(callMethod, returnMessage);
+	if (returnMessage.strReturn == "NO_NULL")
+		m_rpcClient->outputString("Caculation resule is:" + returnMessage.iReturn);
+	else
+		write_log("∑¢ÀÕΩ” ‹¥ÌŒÛ","rpc");
+	/*
+	std::vector <ClientMessage> vMessage;
+	
+	ClientMessage cFuncName, cFuncPara;
+	cFuncName.func_name = "calculate_x_y";
+	vMessage.push_back(cFuncName);
+
+	cFuncPara.iPut =10 ;
+	vMessage.push_back(cFuncPara);
+	
+	m_rpcClient->call_server(vMessage, returnMessage);
+	m_rpcClient->outputString("Caculation resule is:"+ returnMessage.iReturn);
+	*/
+	
 }
 void RpcTestDialog:: write_log(std::string msg, std::string gateway_name)
 {

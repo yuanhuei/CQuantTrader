@@ -15,13 +15,7 @@ namespace NetworkTool
         //消息类型
        // int Type;
 
-        //默认构造函数
-    BaseMessage::BaseMessage()
-    {
-        Type = 0;
-    }
-    BaseMessage:: ~BaseMessage()
-    {}
+
 
 
 
@@ -33,7 +27,15 @@ namespace NetworkTool
      //   SubscribeReq   func_para_subReq;
        // OrderReq       func_para_orderReq;
       //  CancelOrderReq func_para_cancelReq;
+    /*
+    template<typename ... Args>
+    //void MethodCallMessage::remoteMethod(std::string func_name, Args&& ... args)
+    void MethodCallMessage::remoteMethod(std::string func_name,Args&& ... args)
+    {
+        func_name = func_name;
+        fucnPara= std::make_tuple(std::forward<Args>(args)...);
 
+    }*/
 
         //默认构造函数
     ClientMessage::ClientMessage()
@@ -55,8 +57,11 @@ namespace NetworkTool
     ServerMessage::ServerMessage()
     {
         Type = 2048;
+        strReturn = "NULL";
         //m_event = Event("event");
     }
+    ServerMessage::~ServerMessage()
+    {}
 
 
         // 功能 ：构造函数。
@@ -131,6 +136,18 @@ namespace NetworkTool
                     return Convert<ClientMessage>(objmsg);
                 case 2048:
                     return Convert<ServerMessage>(objmsg);
+                case 1000:
+                {
+                    if(bmessage.strFunName=="caculate_x_y")
+                    { 
+                        MethodCallMessage<std::tuple<int, int>>* t = new MethodCallMessage<std::tuple<int, int>>();
+                        objmsg.convert(*t);
+                        return t;
+                    }
+
+                    
+                }
+                    
                 default:
                     return NULL;
                 }

@@ -92,7 +92,8 @@ void call_func(ClientMessage& smessage)
 {
 
 }
-
+inline int calculate_x_y(int x) { return x * x; };
+//template<typename T>
 void RpcServer::run()
 {
 	QDateTime start_time = QDateTime::currentDateTime();
@@ -118,35 +119,51 @@ void RpcServer::run()
 		//int rc = zmq_poll(items, 2, 10000);
 		//if (rc <1)
 			//continue;
-
+		
 		zmq_msg_t* msg = ReceiveMessage(m_socket_rep);
 		if (msg != NULL)
 		{
 			//zmq_msg_t* msg_t = msg.handle();
 
 			Msgpack msgpack;
-			std::vector<NetworkTool::ClientMessage>* vmessage;
-			vmessage = msgpack.Unpackvector(*msg);
+			//template<typename T>
+			//std::vector <ClientMessage>* vmessage;
+			//vmessage = msgpack.Unpackvector(*msg);
+			BaseMessage* vmessage;
+			vmessage = msgpack.Unpack(*msg);
 			CloseMsg(msg);
 			if (vmessage != NULL )
 			{
-				if ((*vmessage).size()> 0)
-				{
+				//if ((*vmessage).size()> 0)
+				//{
 					//outputString("sub port received:" + smessage->Information + "\n");
 					//call_func(smessage);
 					
-					ServerMessage returnMessage= ServerMessage();
-					m_rpcEngine->call_func(*vmessage, returnMessage);//调用注册的函数
+				ServerMessage returnMessage= ServerMessage();
+				if(vmessage->Type==1000 && vmessage->strFunName=="caculate_x_y")
+				{ 
+					MethodCallMessage<std::tuple<int, int>>* pMessage = dynamic_cast<MethodCallMessage<std::tuple<int, int>>*>(vmessage);
+				
+						//m_gatewaymanager->subscribe(vMessage[1].func_para_subReq, "CTP");
+					outputString("received:" + vmessage->strFunName + "\n");
+					returnMessage.iReturn=calculate_x_y(std::get<0>(pMessage->funcPara));
+					returnMessage.Information.push_back("ReturnCallserver");
+						
+					
+
+					//m_rpcEngine->call_func(*vmessage, returnMessage);//调用注册的函数
 
 					Msgpack msgpack;
 					bool result = msgpack.Pack<ServerMessage>(returnMessage);
 					if (result)
 						result = SendMsg(&msgpack, m_socket_rep, zmq::send_flags::dontwait, false);//发送函数执行的返回值
+					if (result)
+						outputString("send return msg succeed\n");
 
 				}
 				delete vmessage;
 				vmessage = NULL;
-
+				
 			}
 		}
 		/*
@@ -165,8 +182,9 @@ void RpcServer::run()
 			m_socket_rep->send(reply, zmq::send_flags::dontwait);
 			continue;
 		}
-		//Sleep(1000);
 		*/
+		//Sleep(1000);
+		
 	}
 	outputString("RpcServer thread exit\n");
 	char cLastEndPoint[30];
@@ -289,8 +307,8 @@ void RpcClient::run()
 			std::cout << "Received " << strRec << std::endl;
 			if (strRec != KEEP_ALIVE_TOPIC)
 				outputString("sub port received:" + strRec + "\n");
-		}
-		*/
+		}*/
+		
 		zmq_msg_t* msg = ReceiveMessage(m_socket_sub);
 		if (msg!=NULL)
 		{
@@ -399,7 +417,10 @@ void RpcClient::call_server(std::vector<ClientMessage> v_para,ServerMessage& ret
 				ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
 				if (smessage != NULL)
 				{
-					outputString("sub port received:" + smessage->Information[0] + "\n");
+					if(smessage->Information[0]!="ReturnCallserver")
+						outputString("sub port received:" + smessage->Information[0] +"\n");
+					else
+						outputString("caculation result =:" + std::to_string(smessage->iReturn)+ "\n");
 					returnMessage = *smessage;//返回值
 				}
 				delete smessage;
@@ -410,3 +431,5 @@ void RpcClient::call_server(std::vector<ClientMessage> v_para,ServerMessage& ret
 		m_threadMutex.unlock();
 	}
 }
+
+

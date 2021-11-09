@@ -1,7 +1,9 @@
 #pragma once
 #include"../gateway/qcgateway.hpp"
 #include"network.h"
+//using namespace NetworkTool;
 class RpcClient;
+//class ServerMessage;
 
 class RpcGateway :
     public QCGateway

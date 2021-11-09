@@ -12,16 +12,56 @@ namespace NetworkTool
     class  BaseMessage
     {
     public:
-        BaseMessage();
-        ~BaseMessage();
+        virtual void BaseMessage::output() {};
+
+
+        //默认构造函数
+        BaseMessage::BaseMessage()
+        {
+            Type = 0;
+            strFunName = "NULL";
+        };
+        BaseMessage:: ~BaseMessage()
+        {};
         int Type;
-        MSGPACK_DEFINE(Type);
+        std::string strFunName;
+        MSGPACK_DEFINE(Type, strFunName);
+    };
+    
+    template<class T>
+    class MethodCallMessage : public BaseMessage
+    {
+    public:
+        std::string Information;
+        std::string    func_name;
+        //std::tuple<...Args> fucnPara;
+        T funcPara;
+        //void remoteMethod(std::string funname, T t);
+        MSGPACK_DEFINE(Type, strFunName,Information, func_name, funcPara);
+
+        //默认构造函数
+        MethodCallMessage(std::string strFun, T tFuncPara)
+        {
+            Type = 1000;
+            strFunName = strFun;
+            func_name = strFun;
+            funcPara = tFuncPara;
+        };
+        MethodCallMessage()
+        {
+            Type = 1000;
+        };
+        ~MethodCallMessage() 
+        {};
+        void output() 
+        {};
+
     };
     class ClientMessage : public BaseMessage
     {
     public:
 
-        MSGPACK_DEFINE(Type, Information, func_name, func_para_subReq, func_para_orderReq, func_para_cancelReq);
+        MSGPACK_DEFINE(Type, Information, func_name, func_para_subReq, func_para_orderReq, func_para_cancelReq,iPut,strPut);
 
         //信息
         std::string Information;
@@ -29,6 +69,9 @@ namespace NetworkTool
         SubscribeReq   func_para_subReq;
         OrderReq       func_para_orderReq;
         CancelOrderReq func_para_cancelReq;
+        int iPut;
+        std::string strPut;
+
 
 
         //默认构造函数
@@ -62,6 +105,7 @@ namespace NetworkTool
         Event_Log event_log;
         //默认构造函数
         ServerMessage();
+        ~ServerMessage();
     };
     class Msgpack
     {
