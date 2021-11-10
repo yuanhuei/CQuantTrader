@@ -114,6 +114,12 @@ namespace NetworkTool
                         objmsg.convert(*t);
                         return t;
                     }
+                    else if (bmessage.strFunName == "cancelOrder")
+                    {
+                        MethodCallMessage<std::tuple<CancelOrderReq>>* t = new MethodCallMessage<std::tuple<CancelOrderReq>>();
+                        objmsg.convert(*t);
+                        return t;
+                    }
 
                     
                 }

@@ -66,6 +66,7 @@ void RpcEngine::call_func(BaseMessage & vMessage, ServerMessage& returnMessage)
         MethodCallMessage<std::tuple<CancelOrderReq>>* pMessage = static_cast<MethodCallMessage<std::tuple<CancelOrderReq>>*>(&vMessage);
         m_gatewaymanager->cancelOrder(std::get<0>(pMessage->funcPara), "CTP");
         returnMessage.strReturnType = "void";
+        returnMessage.bReturnResult = true;
     }
 
 }

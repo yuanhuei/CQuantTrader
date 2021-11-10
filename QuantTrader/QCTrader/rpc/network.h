@@ -69,7 +69,9 @@ namespace NetworkTool
         std::string    func_name;
 
         //默认构造函数
-        ClientMessage::ClientMessage() { Type = 1024;};
+        ClientMessage::ClientMessage() { 
+            Type = 1024;
+        };
         ClientMessage::~ClientMessage() {};
 
     };
@@ -80,7 +82,7 @@ namespace NetworkTool
     public:
 
         MSGPACK_DEFINE(Type, strFunName, Information, str_EventType, event_timer, event_tick, event_trade, event_stoporder, event_contract,
-            event_position, event_account, event_error, event_log, strReturnType, iReturn,strReturn);
+            event_position, event_account, event_error, event_log, strReturnType, iReturn,strReturn, bReturnResult);
 
         //信息
         bool bReturnResult = false;//request是否接受到server的正常reply

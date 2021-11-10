@@ -103,8 +103,8 @@ void RpcServer::run()
 		QDateTime cur_time = QDateTime::currentDateTime();
 		int delta = -cur_time.secsTo(start_time);
 
-		if (delta > KEEP_ALIVE_INTERVAL)
-			publish(KEEP_ALIVE_TOPIC);
+		//if (delta > KEEP_ALIVE_INTERVAL)
+			//publish(KEEP_ALIVE_TOPIC);
 		start_time = QDateTime::currentDateTime();
 		//zmq_pollitem_t items[2];
 		/* First item refers to socket 'socket' */

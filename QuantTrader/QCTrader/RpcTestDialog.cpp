@@ -71,16 +71,17 @@ void RpcTestDialog::rpcclient_sendreq()
 	
 	
 	NetworkTool::ServerMessage returnMessage;
-	std::tuple<int, int> inputPara(10,10);
-	NetworkTool::MethodCallMessage<std::tuple<int, int>> callMethod("caculate_x_y", inputPara);
+	CancelOrderReq req;
+	req.orderID = "001";
+	std::tuple<CancelOrderReq> inputPara(req);//std::tuple<int, int> inputPara(10,10);
+	NetworkTool::MethodCallMessage<std::tuple<CancelOrderReq>> callMethod("cancelOrder", inputPara);
 
 	m_rpcClient->call_server(callMethod, returnMessage);
 	if (returnMessage.bReturnResult)//收到了正常返回
 		m_rpcClient->outputString("Caculation resule is:" + std::to_string(returnMessage.iReturn) + "\n");
-
-	
-	
 }
+
+
 void RpcTestDialog:: write_log(std::string msg, std::string gateway_name)
 {
 	m_MainWindow->write_log(msg, gateway_name);
