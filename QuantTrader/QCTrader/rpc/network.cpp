@@ -10,34 +10,8 @@
 namespace NetworkTool
 {
 
-        //MSGPACK_DEFINE(Type);
-
-        //消息类型
-       // int Type;
-
-
-
-
-
-        //MSGPACK_DEFINE(Type, Information,func_name, func_para_subReq, func_para_orderReq, func_para_cancelReq);
-
-        //信息
-        //std::string Information;
-       // std::string    func_name;
-     //   SubscribeReq   func_para_subReq;
-       // OrderReq       func_para_orderReq;
-      //  CancelOrderReq func_para_cancelReq;
     /*
-    template<typename ... Args>
-    //void MethodCallMessage::remoteMethod(std::string func_name, Args&& ... args)
-    void MethodCallMessage::remoteMethod(std::string func_name,Args&& ... args)
-    {
-        func_name = func_name;
-        fucnPara= std::make_tuple(std::forward<Args>(args)...);
-
-    }*/
-
-        //默认构造函数
+    //默认构造函数
     ClientMessage::ClientMessage()
     {
         Type = 1024;
@@ -48,12 +22,7 @@ namespace NetworkTool
     //来自服务端的消息
 
 
-      //  MSGPACK_DEFINE(Type, Information);
-
-        //信息
-       // std::vector<std::string> Information;
-
-        //默认构造函数
+      //默认构造函数
     ServerMessage::ServerMessage()
     {
         Type = 2048;
@@ -62,6 +31,7 @@ namespace NetworkTool
     }
     ServerMessage::~ServerMessage()
     {}
+    */
 
 
         // 功能 ：构造函数。

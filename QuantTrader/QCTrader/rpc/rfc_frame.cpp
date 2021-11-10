@@ -92,8 +92,7 @@ void call_func(ClientMessage& smessage)
 {
 
 }
-inline int calculate_x_y(int x) { return x * x; };
-//template<typename T>
+
 void RpcServer::run()
 {
 	QDateTime start_time = QDateTime::currentDateTime();
@@ -140,27 +139,26 @@ void RpcServer::run()
 					//call_func(smessage);
 					
 				ServerMessage returnMessage= ServerMessage();
-				if(vmessage->Type==1000 && vmessage->strFunName=="caculate_x_y")
-				{ 
+				/*
+				if (vmessage->Type == 1000 && vmessage->strFunName == "caculate_x_y")
+				{
 					MethodCallMessage<std::tuple<int, int>>* pMessage = dynamic_cast<MethodCallMessage<std::tuple<int, int>>*>(vmessage);
-				
-						//m_gatewaymanager->subscribe(vMessage[1].func_para_subReq, "CTP");
+
+					//m_gatewaymanager->subscribe(vMessage[1].func_para_subReq, "CTP");
 					outputString("received:" + vmessage->strFunName + "\n");
-					returnMessage.iReturn=calculate_x_y(std::get<0>(pMessage->funcPara));
+					returnMessage.iReturn = calculate_x_y(std::get<0>(pMessage->funcPara));
 					returnMessage.Information.push_back("ReturnCallserver");
-						
 					
+				}*/
+				m_rpcEngine->call_func(*vmessage, returnMessage);//调用注册的函数
+				Msgpack msgpack;
+				bool result = msgpack.Pack<ServerMessage>(returnMessage);
+				if (result)
+					result = SendMsg(&msgpack, m_socket_rep, zmq::send_flags::dontwait, false);//发送函数执行的返回值
+				if (result)
+					outputString("send return msg succeed\n");
 
-					//m_rpcEngine->call_func(*vmessage, returnMessage);//调用注册的函数
-
-					Msgpack msgpack;
-					bool result = msgpack.Pack<ServerMessage>(returnMessage);
-					if (result)
-						result = SendMsg(&msgpack, m_socket_rep, zmq::send_flags::dontwait, false);//发送函数执行的返回值
-					if (result)
-						outputString("send return msg succeed\n");
-
-				}
+				
 				delete vmessage;
 				vmessage = NULL;
 				
@@ -324,7 +322,7 @@ void RpcClient::run()
 				if (smessage != NULL)
 				{
 					outputString("sub port received:" + smessage->Information[0] + "\n");
-					if(smessage->Information[0]!= KEEP_ALIVE_TOPIC)
+					if(smessage->Information[0]== "Event")
 						callback("callback", *smessage);
 				}
 				delete smessage;

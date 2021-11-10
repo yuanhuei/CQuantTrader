@@ -27,44 +27,32 @@ void RpcGateway::connect(std::string req_address,std::string pub_address)
 
 void RpcGateway::subscribe(SubscribeReq& subscribeReq)
 {
-	std::vector <ClientMessage> vMessage;
+
 	ServerMessage returnMessage;
-	ClientMessage func_name, func_para_subReq;
-	func_name.func_name = "subscribe";
-	vMessage.push_back(func_name);
+	std::tuple<SubscribeReq> inputPara(subscribeReq);
+	MethodCallMessage<std::tuple<SubscribeReq>> callMethod("subscribe", inputPara);
 
-	func_para_subReq.func_para_subReq = subscribeReq;
-	vMessage.push_back(func_para_subReq);
-
-	m_client->call_server(vMessage, returnMessage);
-
+	m_client->call_server(callMethod, returnMessage);
+	
 }
 std::string RpcGateway::sendOrder(OrderReq& req)
 {
-	std::vector <ClientMessage> vMessage;
+
+
 	ServerMessage returnMessage;
-	ClientMessage func_name, func_para_subReq;
-	func_name.func_name = "sendOrder";
-	vMessage.push_back(func_name);
+	std::tuple<OrderReq> inputPara(req);
+	MethodCallMessage<std::tuple<OrderReq>> callMethod("sendOrder", inputPara);
 
-	func_para_subReq.func_para_orderReq = req;
-	vMessage.push_back(func_para_subReq);
-
-	m_client->call_server(vMessage, returnMessage);
+	m_client->call_server(callMethod, returnMessage);
 	return returnMessage.strReturn;
 }
 void RpcGateway::cancelOrder(CancelOrderReq& req)
 {
-	std::vector <ClientMessage> vMessage;
+
 	ServerMessage returnMessage;
-	ClientMessage func_name, func_para_subReq;
-	func_name.func_name = "cancelOrder";
-	vMessage.push_back(func_name);
-
-	func_para_subReq.func_para_cancelReq = req;
-	vMessage.push_back(func_para_subReq);
-
-	m_client->call_server(vMessage, returnMessage);
+	std::tuple<CancelOrderReq> inputPara(req);
+	MethodCallMessage<std::tuple<CancelOrderReq>> callMethod("cancelOrder", inputPara);
+	m_client->call_server(callMethod, returnMessage);
 }
 void RpcGateway::query_all()
 {

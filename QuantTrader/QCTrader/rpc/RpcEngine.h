@@ -15,7 +15,7 @@ class RpcEngine
 public:
 	RpcEngine(MainWindow* mainwindow);
 	~RpcEngine();
-
+	inline int calculate_x_y(int x) { return x * x; };
 	void init_server();
 	void load_setting();
 	void save_setting();
@@ -25,7 +25,7 @@ public:
 	void process_event(std::shared_ptr<Event> e);
 	void write_log(std::string strLog);
 	void register_event();
-	void call_func(std::vector<NetworkTool::ClientMessage>& vMessage, NetworkTool::ServerMessage& returnMessage);
+	void call_func(NetworkTool::BaseMessage& vMessage, NetworkTool::ServerMessage& returnMessage);
 private:
 	RpcServer* m_RpcServer;
 	std::string rep_address;

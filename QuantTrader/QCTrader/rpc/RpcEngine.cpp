@@ -37,23 +37,37 @@ void RpcEngine::register_event()
     //m_eventengine->RegEvent(EVENT_LOG, std::bind(&RpcEngine::v, this, std::placeholders::_1));
 
 }
-void RpcEngine::call_func(std::vector<ClientMessage>& vMessage, ServerMessage& returnMessage)
+void RpcEngine::call_func(BaseMessage & vMessage, ServerMessage& returnMessage)
 {
-    if (vMessage[0].func_name == "subscribe")
+    if (vMessage.Type == 1000 && vMessage.strFunName == "caculate_x_y")
     {
-        m_gatewaymanager->subscribe(vMessage[1].func_para_subReq, "CTP");
+        MethodCallMessage<std::tuple<int, int>>* pMessage = static_cast<MethodCallMessage<std::tuple<int, int>>*>(&vMessage);
+
+        //m_gatewaymanager->subscribe(vMessage[1].func_para_subReq, "CTP");
+        //outputString("received:" + vmessage->strFunName + "\n");
+        returnMessage.iReturn = calculate_x_y(std::get<0>(pMessage->funcPara));
+        returnMessage.Information.push_back("ReturnCallserver");
+
+    }
+    else if(vMessage.Type == 1000 && vMessage.strFunName == "subscribe")
+    {
+        MethodCallMessage<std::tuple<SubscribeReq>>* pMessage = static_cast<MethodCallMessage<std::tuple<SubscribeReq>>*>(&vMessage);
+        m_gatewaymanager->subscribe(std::get<0>(pMessage->funcPara), "CTP");
         returnMessage.strReturnType = "void";
     }
-    else if (vMessage[0].func_name == "sendOrder")
+    else if (vMessage.Type == 1000 && vMessage.strFunName == "sendOrder")
     {
-        returnMessage.strReturn=m_gatewaymanager->sendOrder(vMessage[1].func_para_orderReq, "CTP");
-        returnMessage.strReturnType = "string";
-    }
-    else if (vMessage[0].func_name == "cancelOrder")
-    {
-        m_gatewaymanager->cancelOrder(vMessage[1].func_para_cancelReq, "CTP");
+        MethodCallMessage<std::tuple<OrderReq>>* pMessage = static_cast<MethodCallMessage<std::tuple<OrderReq>>*>(&vMessage);
+        m_gatewaymanager->sendOrder(std::get<0>(pMessage->funcPara), "CTP");
         returnMessage.strReturnType = "void";
     }
+    else if (vMessage.Type == 1000 && vMessage.strFunName == "cancelOrder")
+    {
+        MethodCallMessage<std::tuple<CancelOrderReq>>* pMessage = static_cast<MethodCallMessage<std::tuple<CancelOrderReq>>*>(&vMessage);
+        m_gatewaymanager->cancelOrder(std::get<0>(pMessage->funcPara), "CTP");
+        returnMessage.strReturnType = "void";
+    }
+
 }
 
 void RpcEngine::init_server()

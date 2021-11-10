@@ -104,15 +104,16 @@ public:
 				CloseMsg(msg);
 				if (bmessage != NULL && bmessage->Type == 2048)
 				{
-					returnMessage.strReturn = "NO_NULL";
+					//returnMessage.strReturn = "NO_NULL";
 					ServerMessage* smessage = static_cast<ServerMessage*>(bmessage);
 					if (smessage != NULL)
 					{
-						if (smessage->Information[0] != "ReturnCallserver")
-							outputString("sub port received:" + smessage->Information[0] + "\n");
+						//if (smessage->Information[0] != "ReturnCallserver")
+						//outputString("sub port received:" + smessage->Information[0] + "\n");
 						//else
 							//outputString("caculation result =:" + std::to_string(smessage->iReturn) + "\n");
 						returnMessage = *smessage;//·µ»ØÖµ
+						returnMessage.bReturnResult = true;
 					}
 					delete smessage;
 					smessage = NULL;

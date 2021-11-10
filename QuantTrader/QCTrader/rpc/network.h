@@ -27,7 +27,7 @@ namespace NetworkTool
         std::string strFunName;
         MSGPACK_DEFINE(Type, strFunName);
     };
-    
+    //基于模板的客户端RPC调用 包含函数名称和输入参数的类
     template<class T>
     class MethodCallMessage : public BaseMessage
     {
@@ -57,28 +57,24 @@ namespace NetworkTool
         {};
 
     };
+    //客户端消息
     class ClientMessage : public BaseMessage
     {
     public:
 
-        MSGPACK_DEFINE(Type, strFunName, Information, func_name, func_para_subReq, func_para_orderReq, func_para_cancelReq,iPut,strPut);
+        MSGPACK_DEFINE(Type, strFunName, Information, func_name);
 
         //信息
         std::string Information;
         std::string    func_name;
-        SubscribeReq   func_para_subReq;
-        OrderReq       func_para_orderReq;
-        CancelOrderReq func_para_cancelReq;
-        int iPut;
-        std::string strPut;
-
-
 
         //默认构造函数
-        ClientMessage();
-        ~ClientMessage();
+        ClientMessage::ClientMessage() { Type = 1024;};
+        ClientMessage::~ClientMessage() {};
 
     };
+
+    //服务器端的消息封装
     class ServerMessage : public BaseMessage
     {
     public:
@@ -87,6 +83,7 @@ namespace NetworkTool
             event_position, event_account, event_error, event_log, strReturnType, iReturn,strReturn);
 
         //信息
+        bool bReturnResult = false;//request是否接受到server的正常reply
         std::vector<std::string> Information;
         std::string str_EventType;
         std::string strReturnType;
@@ -104,8 +101,11 @@ namespace NetworkTool
         Event_Error   event_error;
         Event_Log event_log;
         //默认构造函数
-        ServerMessage();
-        ~ServerMessage();
+        ServerMessage::ServerMessage() {
+            Type = 2048;
+            strReturn = "NULL";
+        };
+        ServerMessage::~ServerMessage() {};
     };
     class Msgpack
     {
