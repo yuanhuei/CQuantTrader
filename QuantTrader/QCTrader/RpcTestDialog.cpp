@@ -68,17 +68,17 @@ void RpcTestDialog::rpcclient_sendreq()
 		m_rpcClient->sendRequest(strInput.toStdString());
     */
 	//using namespace NetworkTool;
+	
+	//int i = 10;
 	NetworkTool::ServerMessage returnMessage;
 	std::tuple<int, int> inputPara(10,10);
-	NetworkTool::MethodCallMessage<std::tuple<int, int>> callMethod("caculate_x_y",inputPara);
-	//int i = 10;
-	//NetworkTool::MethodCallMessage<int> callMethod("caculate_x_y",i);
+	NetworkTool::MethodCallMessage<std::tuple<int, int>> callMethod("caculate_x_y", inputPara);
 
 	m_rpcClient->call_server(callMethod, returnMessage);
-	if (returnMessage.strReturn == "NO_NULL")
-		m_rpcClient->outputString("Caculation resule is:" + returnMessage.iReturn);
-	else
-		write_log("发送接受错误","rpc");
+	//if (returnMessage.strReturn == "NO_NULL")
+	m_rpcClient->outputString("Caculation resule is:" + std::to_string(returnMessage.iReturn) + "\n");
+	//else
+		//write_log("发送接受错误","rpc");
 	/*
 	std::vector <ClientMessage> vMessage;
 	

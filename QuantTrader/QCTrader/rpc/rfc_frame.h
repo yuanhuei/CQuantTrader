@@ -110,8 +110,8 @@ public:
 					{
 						if (smessage->Information[0] != "ReturnCallserver")
 							outputString("sub port received:" + smessage->Information[0] + "\n");
-						else
-							outputString("caculation result =:" + std::to_string(smessage->iReturn) + "\n");
+						//else
+							//outputString("caculation result =:" + std::to_string(smessage->iReturn) + "\n");
 						returnMessage = *smessage;//·µ»ØÖµ
 					}
 					delete smessage;
@@ -120,12 +120,12 @@ public:
 				}
 				else
 				{
-					outputString("unpack failed");
+					outputString("unpack failed\n");
 				}
 			}
 			else
 			{
-				outputString("receive null msg");
+				outputString("receive null msg\n");
 			}
 				
 			m_threadMutex.unlock();

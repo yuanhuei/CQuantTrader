@@ -61,7 +61,7 @@ namespace NetworkTool
     {
     public:
 
-        MSGPACK_DEFINE(Type, Information, func_name, func_para_subReq, func_para_orderReq, func_para_cancelReq,iPut,strPut);
+        MSGPACK_DEFINE(Type, strFunName, Information, func_name, func_para_subReq, func_para_orderReq, func_para_cancelReq,iPut,strPut);
 
         //信息
         std::string Information;
@@ -83,7 +83,7 @@ namespace NetworkTool
     {
     public:
 
-        MSGPACK_DEFINE(Type, Information, str_EventType, event_timer, event_tick, event_trade, event_stoporder, event_contract,
+        MSGPACK_DEFINE(Type, strFunName, Information, str_EventType, event_timer, event_tick, event_trade, event_stoporder, event_contract,
             event_position, event_account, event_error, event_log, strReturnType, iReturn,strReturn);
 
         //信息
