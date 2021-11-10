@@ -67,31 +67,18 @@ void RpcTestDialog::rpcclient_sendreq()
 	if (strInput.size() > 0)
 		m_rpcClient->sendRequest(strInput.toStdString());
     */
-	//using namespace NetworkTool;
+
 	
-	//int i = 10;
+	
 	NetworkTool::ServerMessage returnMessage;
 	std::tuple<int, int> inputPara(10,10);
 	NetworkTool::MethodCallMessage<std::tuple<int, int>> callMethod("caculate_x_y", inputPara);
 
 	m_rpcClient->call_server(callMethod, returnMessage);
-	//if (returnMessage.strReturn == "NO_NULL")
-	m_rpcClient->outputString("Caculation resule is:" + std::to_string(returnMessage.iReturn) + "\n");
-	//else
-		//write_log("发送接受错误","rpc");
-	/*
-	std::vector <ClientMessage> vMessage;
-	
-	ClientMessage cFuncName, cFuncPara;
-	cFuncName.func_name = "calculate_x_y";
-	vMessage.push_back(cFuncName);
+	if (returnMessage.bReturnResult)//收到了正常返回
+		m_rpcClient->outputString("Caculation resule is:" + std::to_string(returnMessage.iReturn) + "\n");
 
-	cFuncPara.iPut =10 ;
-	vMessage.push_back(cFuncPara);
 	
-	m_rpcClient->call_server(vMessage, returnMessage);
-	m_rpcClient->outputString("Caculation resule is:"+ returnMessage.iReturn);
-	*/
 	
 }
 void RpcTestDialog:: write_log(std::string msg, std::string gateway_name)
