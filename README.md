@@ -1,23 +1,24 @@
-# QuantTrader
+# CQuantTrader
 
 #### 介绍
 量化交易框架，开发语言C++,编译环境用VS2019 + QT5.12.11_msvc2017
-
+Quantitive Trader software,developed with c++, build with VS2019, QT5.12.11, Msvc2017
 
 #### 软件架构说明
 
 #######软件功能
 1.CTP连接，行情订阅，下单，订单管理，仓位和账户查询
-
+CTP Connectiong, order management, position and account management
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/132250_2ee4a6da_9459957.png "ctp连接.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/140614_3623bcc0_9459957.jpeg "图像 5.jpg")
-2.合约查询
+2.合约查询 Contract Query
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/140944_4d4db3fd_9459957.jpeg "合约查询.jpg")
-3.CTA策略
+3.CTA策略CTA Stratigry 
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/115628_b162b9c5_9459957.png "cta.png")
-4.CTA回测
+4.CTA回测 CTA Backtesting
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/141041_695d2f29_9459957.jpeg "CTA回测.jpg")
 5.CTA回测K线和开平仓显示
+K line chart Display for CTA backtesting
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/115611_41c079fd_9459957.png "temp.png")
 6.交易风控
 
@@ -25,6 +26,7 @@
 
 7.RPC框架下的分布式架构，基于ZMQ和msgpack开发了一个简单RPC框架，形成分布式架构。可以简单通过配置文件配置客户端，服务器。当前
 主要是将CTP后台分离到服务器端，提供RPC服务。
+Distributed architecture with RPC function on CTP based on ZMQ and msgpack. 
 
 客户端
 
