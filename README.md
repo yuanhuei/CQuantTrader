@@ -7,20 +7,20 @@ Quantitive Trader software,developed with c++, build with VS2019, QT5.12.11, Msv
 #### 软件架构说明
 
 #######软件功能
-1.CTP连接，行情订阅，下单，订单管理，仓位和账户查询
-CTP Connectiong, order management, position and account management
+1.CTP连接，行情订阅，下单，订单管理，仓位和账户查询CTP Connection, order , position and account management
+
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/132250_2ee4a6da_9459957.png "ctp连接.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/140614_3623bcc0_9459957.jpeg "图像 5.jpg")
 2.合约查询 Contract Query
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/140944_4d4db3fd_9459957.jpeg "合约查询.jpg")
-3.CTA策略CTA Stratigry 
+3.CTA策略CTA Strategy 
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/115628_b162b9c5_9459957.png "cta.png")
 4.CTA回测 CTA Backtesting
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0722/141041_695d2f29_9459957.jpeg "CTA回测.jpg")
 5.CTA回测K线和开平仓显示
 K line chart Display for CTA backtesting
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/115611_41c079fd_9459957.png "temp.png")
-6.交易风控
+6.交易风控Risk Management
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0806/131757_39f451fa_9459957.png "risk.png")
 
